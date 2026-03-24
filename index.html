@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Mr. Haule Services | Academic & IT Support</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Mr. Haule Services – Professional academic and IT support for students and the community. Apply for HESLB, RITA, NIDA, IT support, and more. Fast, reliable, and confidential.">
+  <meta name="keywords" content="HESLB, RITA, NIDA, IT support, academic help, Tanzania, Mr. Haule">
+  <meta name="author" content="Mr. Haule">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <!-- Three.js for 3D Background -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+      }
+    }
+  </script>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'Calibri', sans-serif;
+      color: #eef2ff;
+      line-height: 1.5;
+      overflow-x: hidden;
+      background: #0a0f1c;
+    }
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      display: block;
+    }
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem;
+      position: relative;
+      z-index: 10;
+    }
+    .sidebar {
+      width: 280px;
+      background: rgba(10,20,35,0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 1.5rem;
+      margin-right: 1.5rem;
+      padding: 1rem 0;
+      border: 1px solid rgba(255,255,255,0.15);
+      height: calc(100vh - 2rem);
+      position: sticky;
+      top: 1rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .sidebar-header {
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 1rem;
+    }
+    .sidebar-header .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff, #f3a712);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      padding: 0 0.8rem;
+    }
+    .sidebar-nav a, .sidebar-nav button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.8rem 1rem;
+      border-radius: 1rem;
+      color: #e2e8f0;
+      text-decoration: none;
+      transition: all 0.2s;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .sidebar-nav a:hover, .sidebar-nav button:hover {
+      background: rgba(59,130,246,0.2);
+      color: white;
+      transform: translateX(4px);
+    }
+    .sidebar-nav .active {
+      background: rgba(59,130,246,0.3);
+      color: white;
+    }
+    .language-selector {
+      margin-top: auto;
+      padding: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .lang-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2rem;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .lang-btn.active { background: #3b82f6; }
+    .sidebar-footer {
+      padding: 1rem;
+      font-size: 0.7rem;
+      text-align: center;
+      color: #94a3b8;
+    }
+    .main-content {
+      flex: 1;
+      background: rgba(15,25,45,0.55);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      padding: 1.5rem;
+    }
+    .card {
+      background: rgba(20,30,55,0.6);
+      backdrop-filter: blur(8px);
+      border-radius: 1.2rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      border-color: rgba(59,130,246,0.4);
+    }
+    .input-group {
+      margin-bottom: 1rem;
+    }
+    .input-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      color: #cbd5e1;
+    }
+    .input-group input, .input-group select, .input-group textarea {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 1rem;
+      color: white;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+    .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+    }
+    .btn-primary, .btn-secondary, .btn-whatsapp {
+      display: inline-block;
+      padding: 0.7rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(115deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+      transform: rotate(25deg);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) rotate(25deg); }
+      100% { transform: translateX(100%) rotate(25deg); }
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(59,130,246,0.4);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #3b82f6;
+      color: #3b82f6;
+    }
+    .btn-secondary:hover {
+      background: rgba(59,130,246,0.1);
+      transform: translateY(-2px);
+    }
+    .btn-whatsapp {
+      background: #25d366;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-whatsapp:hover {
+      background: #20b859;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(37,211,102,0.3);
+    }
+    .payment-methods-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.8rem;
+      margin: 0.8rem 0;
+    }
+    .payment-method-card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 0.8rem;
+      padding: 0.6rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .payment-method-card:hover {
+      transform: scale(1.02);
+      border-color: #3b82f6;
+    }
+    .payment-method-card.selected {
+      border-color: #3b82f6;
+      background: rgba(59,130,246,0.2);
+    }
+    .history-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .history-item {
+      background: rgba(0,0,0,0.3);
+      border-left: 4px solid #3b82f6;
+      padding: 0.8rem;
+      margin-bottom: 0.8rem;
+      border-radius: 0.8rem;
+      transition: transform 0.2s;
+    }
+    .history-item:hover {
+      transform: translateX(5px);
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      background: #f59e0b;
+    }
+    .status-completed { background: #10b981; }
+    .status-processing { background: #3b82f6; }
+    .toast-3d {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #3b82f6, #10b981, #f59e0b);
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite, slideIn 0.5s ease-out, float 3s ease-in-out infinite;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 60px;
+      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.2);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform-style: preserve-3d;
+      transform: translateZ(30px) rotateX(2deg);
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%) translateZ(0); opacity: 0; }
+      to { transform: translateX(0) translateZ(30px); opacity: 1; }
+    }
+    @keyframes float {
+      0% { transform: translateY(0px) translateZ(30px); }
+      50% { transform: translateY(-10px) translateZ(40px); }
+      100% { transform: translateY(0px) translateZ(30px); }
+    }
+    .service-description {
+      background: rgba(0,0,0,0.3);
+      padding: 0.6rem;
+      border-radius: 0.8rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      border-left: 3px solid #3b82f6;
+    }
+    .bottom-cards {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    @media (max-width: 768px) {
+      .app-layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: relative; margin-bottom: 1rem; }
+      .main-content { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="bg-canvas"></div>
+<div class="app-layout">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo"><i class="fas fa-graduation-cap"></i> Mr. Haule Services</div>
+    </div>
+    <div class="sidebar-nav" id="sidebarNav"></div>
+    <div class="language-selector">
+      <button class="lang-btn" data-lang="en">English</button>
+      <button class="lang-btn" data-lang="sw">Kiswahili</button>
+    </div>
+    <div class="sidebar-footer"><p>&copy; 2026 Mr. Haule</p></div>
+  </div>
+  <div class="main-content" id="mainContent"></div>
+</div>
+
+<script type="module">
+  import * as THREE from 'three';
+  // ========== THREE.JS BACKGROUND (3D) ==========
+  const canvas = document.getElementById('bg-canvas');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+  canvas.appendChild(renderer.domElement);
+  const particlesGeometry = new THREE.BufferGeometry();
+  const particlesCount = 2000;
+  const posArray = new Float32Array(particlesCount * 3);
+  const colorArray = new Float32Array(particlesCount * 3);
+  for (let i = 0; i < particlesCount; i++) {
+    posArray[i*3] = (Math.random() - 0.5) * 40;
+    posArray[i*3+1] = (Math.random() - 0.5) * 20;
+    posArray[i*3+2] = (Math.random() - 0.5) * 30 - 10;
+    const colors = [[0.12,0.55,0.33], [0.95,0.69,0.13], [0.13,0.54,0.82], [0.2,0.2,0.2]];
+    const col = colors[Math.floor(Math.random() * colors.length)];
+    colorArray[i*3] = col[0];
+    colorArray[i*3+1] = col[1];
+    colorArray[i*3+2] = col[2];
+  }
+  particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+  particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+  const particlesMaterial = new THREE.PointsMaterial({ size: 0.1, vertexColors: true, transparent: true, opacity: 0.7 });
+  const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+  scene.add(particlesMesh);
+  const sphereGeo = new THREE.SphereGeometry(1.5, 32, 32);
+  const sphereMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, emissive: 0x1e3a8a, roughness: 0.3, metalness: 0.7 });
+  const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+  scene.add(sphere);
+  const ambientLight = new THREE.AmbientLight(0x404060);
+  scene.add(ambientLight);
+  const pointLight = new THREE.PointLight(0xffaa33, 1);
+  pointLight.position.set(5,5,5);
+  scene.add(pointLight);
+  const pointLight2 = new THREE.PointLight(0x33ffaa, 0.8);
+  pointLight2.position.set(-3,2,4);
+  scene.add(pointLight2);
+  camera.position.z = 8;
+  camera.position.y = 2;
+  function animate() {
+    requestAnimationFrame(animate);
+    particlesMesh.rotation.y += 0.0005;
+    particlesMesh.rotation.x += 0.0003;
+    sphere.rotation.x += 0.005;
+    sphere.rotation.y += 0.007;
+    camera.position.x = Math.sin(Date.now() * 0.0005) * 1;
+    camera.lookAt(0,0,0);
+    renderer.render(scene, camera);
+  }
+  animate();
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+</script>
+
+<script type="module">
+  // ==================== FIREBASE CONFIG & APP LOGIC ====================
+  const firebaseConfig = {
+    apiKey: "AIzaSyCd9YkUhHSWQo4xqqGbFKZDS6gz03io_r8",
+    authDomain: "mr-haule.firebaseapp.com",
+    databaseURL: "https://mr-haule-default-rtdb.firebaseio.com",
+    projectId: "mr-haule",
+    storageBucket: "mr-haule.firebasestorage.app",
+    messagingSenderId: "802356815152",
+    appId: "1:802356815152:web:35b6daccd12376591b54f5",
+    measurementId: "G-TQ1GJ67KGR"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.database();
+  const storage = firebase.storage();
+
+  const ADMIN_EMAILS = ["hamanierasmuce@gmail.com"];
+  let currentUser = null;
+  let currentPage = 'landing';
+  let currentLang = 'en';
+
+  const translations = {
+    en: {
+      home: "Home", dashboard: "Dashboard", payment: "Payment", admin: "Admin",
+      login: "Login", register: "Register", logout: "Logout",
+      welcome: "Welcome to Mr. Haule Services", welcomeSub: "Your trusted partner for academic and IT support",
+      customerCare: "Customer Care", privacy: "Privacy Policy", vision: "Our Vision",
+      customerCareText: "Call or WhatsApp: +255 625 568 661 / +255 692 584 825 / +255 745 014 719 / +255 656 278 661",
+      privacyText: "Your data is safe with us. We never share your information without consent.",
+      visionText: "Empowering students and professionals through reliable academic and IT support.",
+      createAccount: "Create Account", joinUs: "Join us", fullName: "Full Name", gender: "Gender",
+      male: "Male", female: "Female", other: "Other",
+      email: "Email", phone: "Phone", password: "Password", confirmPassword: "Confirm Password",
+      alreadyAccount: "Already have account? Login", noAccount: "Don't have an account? Register",
+      forgotPassword: "Forgot Password?", resetPassword: "Reset Password",
+      sendResetLink: "Send Reset Link", backToLogin: "Back to Login",
+      placeRequest: "Place New Request", service: "Service", serviceFee: "Service Fee",
+      additionalDetails: "Additional Details", uploadFile: "Upload File (max 5MB)",
+      paymentMethod: "Payment Method", submitPayment: "Submit & Make Payment",
+      requestHistory: "Request History", noRequests: "No requests yet",
+      amount: "Amount", status: "Status", pending: "Pending", processing: "Processing", completed: "Completed",
+      salesReport: "Sales Report", allRequests: "All Requests",
+      hello: "Hello", clients: "Clients", successRate: "Success Rate", support: "Support",
+      whatWeOffer: "What We Offer", faq: "Frequently Asked Questions",
+      howRequest: "How do I request a service?", howRequestAns: "Go to Dashboard, select service, fill details, choose payment method, and submit. You'll receive a WhatsApp confirmation.",
+      paymentMethods: "What are the payment methods?", paymentMethodsAns: "VODA LIPA 59183849, TIGO LIPA 45198490, AIRTEL LIPA 65525676, HALOPESA +255625568661, Bank Transfer CRDB 0152836592900. Receiver: AMANI ERASMUCE HAULE.",
+      responseTime: "How long does it take to get a response?", responseTimeAns: "We respond within 15 minutes via WhatsApp.",
+      selectService: "– Choose –",
+      heslb: "HESLB Application", heslbDesc: "Loan applications, corrections, document verification, step-by-step guidance.",
+      rita: "RITA Services", ritaDesc: "Birth certificates, death certificates, corrections, tracking.",
+      nida: "NIDA Services", nidaDesc: "NIDA registration, corrections, obtaining NIDA number.",
+      uniApps: "University Applications", uniAppsDesc: "Admission applications, course selection, university guidance.",
+      academic: "Academic Work", academicDesc: "Assignments, research, field reports, presentations, formal letters.",
+      itSupport: "IT Support", itSupportDesc: "Windows installation, antivirus, virus removal, speed optimization, software install, backup, cleaning."
+    },
+    sw: {
+      home: "Nyumbani", dashboard: "Dashibodi", payment: "Malipo", admin: "Msimamizi",
+      login: "Ingia", register: "Jisajili", logout: "Toka",
+      welcome: "Karibu Mr. Haule Services", welcomeSub: "Mshirika wako wa kuaminika kwa usaidizi wa kitaaluma na IT",
+      customerCare: "Huduma kwa Wateja", privacy: "Sera ya Faragha", vision: "Dira Yetu",
+      customerCareText: "Piga simu au WhatsApp: +255 625 568 661 / +255 692 584 825 / +255 745 014 719 / +255 656 278 661",
+      privacyText: "Taarifa zako ziko salama kwetu. Hatushiriki data yako bila idhini yako.",
+      visionText: "Kuwasaidia wanafunzi na wataalamu kupitia usaidizi wa kitaaluma na IT wa kuaminika.",
+      createAccount: "Fungua Akaunti", joinUs: "Jiunge nasi", fullName: "Jina Kamili", gender: "Jinsia",
+      male: "Me", female: "Ke", other: "Nyingine",
+      email: "Barua pepe", phone: "Namba ya simu", password: "Nenosiri", confirmPassword: "Thibitisha Nenosiri",
+      alreadyAccount: "Tayari una akaunti? Ingia", noAccount: "Huna akaunti? Jisajili",
+      forgotPassword: "Umesahau nenosiri?", resetPassword: "Weka nenosiri jipya",
+      sendResetLink: "Tuma kiungo cha kuweka upya", backToLogin: "Rudi kwenye Kuingia",
+      placeRequest: "Weka Ombi Jipya", service: "Huduma", serviceFee: "Ada ya Huduma",
+      additionalDetails: "Maelezo ya ziada", uploadFile: "Pakia faili (max 5MB)",
+      paymentMethod: "Njia ya Malipo", submitPayment: "Tuma ombi na ulipe",
+      requestHistory: "Historia ya Maombi", noRequests: "Hakuna maombi bado",
+      amount: "Kiasi", status: "Hali", pending: "Inasubiri", processing: "Inachakatwa", completed: "Imekamilika",
+      salesReport: "Ripoti ya Mauzo", allRequests: "Maombi Yote",
+      hello: "Habari", clients: "Wateja", successRate: "Kiwango cha Mafanikio", support: "Usaidizi",
+      whatWeOffer: "Tunatoa Huduma Gani", faq: "Maswali Yanayoulizwa Mara kwa Mara",
+      howRequest: "Ninawezaje kuomba huduma?", howRequestAns: "Nenda kwenye Dashibodi, chagua huduma, jaza maelezo, chagua njia ya malipo, na wasilisha. Utapokea uthibitisho wa WhatsApp.",
+      paymentMethods: "Njia za malipo ni zipi?", paymentMethodsAns: "VODA LIPA 59183849, TIGO LIPA 45198490, AIRTEL LIPA 65525676, HALOPESA +255625568661, Uhamisho wa Benki CRDB 0152836592900. Mpokeaji: AMANI ERASMUCE HAULE.",
+      responseTime: "Inachukua muda gani kupata jibu?", responseTimeAns: "Tunajibu ndani ya dakika 15 kupitia WhatsApp.",
+      selectService: "– Chagua –",
+      heslb: "Maombi ya HESLB", heslbDesc: "Maombi ya mkopo, marekebisho, uhakiki wa nyaraka, mwongozo hatua kwa hatua.",
+      rita: "Huduma za RITA", ritaDesc: "Vyeti vya kuzaliwa, vyeti vya kifo, marekebisho, ufuatiliaji.",
+      nida: "Huduma za NIDA", nidaDesc: "Usajili wa NIDA, marekebisho, kupata namba ya NIDA.",
+      uniApps: "Maombi ya Vyuo", uniAppsDesc: "Maombi ya udahili, uchaguzi wa kozi, mwongozo wa vyuo.",
+      academic: "Kazi za Kitaaluma", academicDesc: "Majibu ya maswali, utafiti, field report, presentations, barua rasmi.",
+      itSupport: "Usaidizi wa IT", itSupportDesc: "Kupiga Windows, antivirus, kuondoa virus, kuongeza speed, backup, kusafisha."
+    }
+  };
+
+  function t(key) { return (translations[currentLang] && translations[currentLang][key]) || (translations.en[key] || key); }
+
+  function showToast(message, icon = 'fa-check-circle') {
+    const toast = document.createElement('div');
+    toast.className = 'toast-3d';
+    toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  }
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      if (btn.dataset.lang === lang) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
+    render();
+  }
+
+  function escapeHtml(s) { if(!s) return ''; return s.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+  function togglePw(id) { const inp = document.getElementById(id); if(inp) inp.type = inp.type === 'password' ? 'text' : 'password'; }
+  function logout() { auth.signOut(); navigate('landing'); }
+  function navigate(page) { currentPage = page; render(); }
+
+  function renderSidebar() {
+    const sidebarNav = document.getElementById('sidebarNav');
+    if (!sidebarNav) return;
+    const isLoggedIn = currentUser !== null;
+    const isAdmin = isLoggedIn && ADMIN_EMAILS.includes(currentUser.email);
+    let links = [];
+    if (!isLoggedIn) {
+      links = [
+        { id: 'landing', label: t('home'), icon: 'fas fa-home' },
+        { id: 'login', label: t('login'), icon: 'fas fa-sign-in-alt' },
+        { id: 'register', label: t('register'), icon: 'fas fa-user-plus' }
+      ];
+    } else {
+      links = [
+        { id: 'home', label: t('home'), icon: 'fas fa-home' },
+        { id: 'dashboard', label: t('dashboard'), icon: 'fas fa-tachometer-alt' },
+        { id: 'payment', label: t('payment'), icon: 'fas fa-credit-card' }
+      ];
+      if (isAdmin) links.push({ id: 'admin', label: t('admin'), icon: 'fas fa-users-cog' });
+      links.push({ id: 'logout', label: t('logout'), icon: 'fas fa-sign-out-alt', action: logout });
+    }
+    sidebarNav.innerHTML = links.map(link => `
+      <${link.action ? 'button' : 'a'} href="#" onclick="${link.action ? 'logout()' : `navigate('${link.id}')`}" class="${currentPage === link.id ? 'active' : ''}">
+        <i class="${link.icon}"></i> <span>${link.label}</span>
+      </${link.action ? 'button' : 'a'}>
+    `).join('');
+  }
+
+  async function render() {
+    renderSidebar();
+    const main = document.getElementById('mainContent');
+    if (!main) return;
+
+    if (currentPage === 'landing') {
+      main.innerHTML = `
+        <div class="card" style="text-align:center;">
+          <h1>${t('welcome')}</h1>
+          <p>${t('welcomeSub')}</p>
+          <div style="display:flex; gap:1rem; justify-content:center; margin-top:1rem;">
+            <button class="btn-primary" style="width:auto;" onclick="navigate('login')">${t('login')}</button>
+            <button class="btn-secondary" style="width:auto;" onclick="navigate('register')">${t('register')}</button>
+          </div>
+        </div>
+        <div class="bottom-cards">
+          <div class="card"><i class="fas fa-headset fa-2x" style="color:#3b82f6;"></i><h3>${t('customerCare')}</h3><p>${t('customerCareText')}</p></div>
+          <div class="card"><i class="fas fa-shield-alt fa-2x" style="color:#10b981;"></i><h3>${t('privacy')}</h3><p>${t('privacyText')}</p></div>
+          <div class="card"><i class="fas fa-star fa-2x" style="color:#f59e0b;"></i><h3>${t('vision')}</h3><p>${t('visionText')}</p></div>
+        </div>
+      `;
+    } else if (currentPage === 'login') {
+      main.innerHTML = `
+        <div class="card">
+          <h2>${t('login')}</h2>
+          <form id="loginForm">
+            <div class="input-group"><label>${t('email')}</label><input type="email" id="loginEmail" required><div class="error" id="loginEmailErr"></div></div>
+            <div class="input-group"><label>${t('password')}</label><div style="position:relative;"><input type="password" id="loginPassword"><i class="fas fa-eye" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;" onclick="togglePw('loginPassword')"></i></div><div class="error" id="loginPwErr"></div></div>
+            <div class="forgot-link"><a href="#" onclick="navigate('forgot')">${t('forgotPassword')}</a></div>
+            <button type="submit" class="btn-primary">${t('login')}</button>
+          </form>
+          <div class="text-center mt-2"><a href="#" onclick="navigate('register')">${t('noAccount')}</a></div>
+        </div>
+      `;
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        try {
+          await auth.signInWithEmailAndPassword(email, password);
+          showToast('✅ Login successful!', 'fa-check-circle');
+          navigate('home');
+        } catch(err) {
+          document.getElementById('loginPwErr').innerText = 'Invalid email or password';
+        }
+      });
+    } else if (currentPage === 'register') {
+      main.innerHTML = `
+        <div class="card">
+          <h2>${t('createAccount')}</h2>
+          <form id="regForm">
+            <div class="input-group"><label>${t('fullName')}</label><input type="text" id="fullName" placeholder="John Michael Haule"><div class="error" id="nameErr"></div></div>
+            <div class="input-group"><label>${t('email')}</label><input type="email" id="email" placeholder="email@example.com"><div class="error" id="emailErr"></div></div>
+            <div class="input-group"><label>${t('phone')}</label><input type="tel" id="phone" placeholder="+255XXXXXXXXX"><div class="error" id="phoneErr"></div></div>
+            <div class="input-group"><label>${t('password')}</label><div style="position:relative;"><input type="password" id="password"><i class="fas fa-eye" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;" onclick="togglePw('password')"></i></div><div class="error" id="pwErr"></div></div>
+            <div class="input-group"><label>${t('confirmPassword')}</label><div style="position:relative;"><input type="password" id="confirmPw"><i class="fas fa-eye" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;" onclick="togglePw('confirmPw')"></i></div><div class="error" id="confirmErr"></div></div>
+            <button type="submit" class="btn-primary">${t('createAccount')}</button>
+          </form>
+          <div class="text-center mt-2"><a href="#" onclick="navigate('login')">${t('alreadyAccount')}</a></div>
+        </div>
+      `;
+      document.getElementById('regForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirmPw').value;
+        let valid = true;
+        if (fullName.split(/\s+/).length < 2) { document.getElementById('nameErr').innerText = 'At least two words'; valid=false; }
+        if (!/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email)) { document.getElementById('emailErr').innerText='Invalid email'; valid=false; }
+        if (!/^\+255[0-9]{9}$/.test(phone)) { document.getElementById('phoneErr').innerText='Format +255XXXXXXXXX'; valid=false; }
+        if (password.length < 6) { document.getElementById('pwErr').innerText='Min 6 chars'; valid=false; }
+        if (password !== confirm) { document.getElementById('confirmErr').innerText='Passwords do not match'; valid=false; }
+        if (!valid) return;
+        try {
+          const userCred = await auth.createUserWithEmailAndPassword(email, password);
+          const uid = userCred.user.uid;
+          await db.ref(`users/${uid}`).set({ fullName, email, phoneNumber: phone, role: 'user' });
+          await userCred.user.updateProfile({ displayName: fullName });
+          showToast('✅ Registration successful!', 'fa-check-circle');
+          navigate('home');
+        } catch(err) {
+          if (err.code === 'auth/email-already-in-use') document.getElementById('emailErr').innerText = 'Email already used';
+          else alert('Error: ' + err.message);
+        }
+      });
+    } else if (currentPage === 'forgot') {
+      main.innerHTML = `
+        <div class="card">
+          <h2>${t('resetPassword')}</h2>
+          <form id="forgotForm">
+            <div class="input-group"><label>${t('email')}</label><input type="email" id="resetEmail" required><div class="error" id="resetErr"></div></div>
+            <button type="submit" class="btn-primary">${t('sendResetLink')}</button>
+          </form>
+          <div class="text-center mt-2"><a href="#" onclick="navigate('login')">${t('backToLogin')}</a></div>
+        </div>
+      `;
+      document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('resetEmail').value.trim();
+        try {
+          await auth.sendPasswordResetEmail(email);
+          alert('Password reset email sent! Check your inbox.');
+          navigate('login');
+        } catch(err) {
+          document.getElementById('resetErr').innerText = err.message;
+        }
+      });
+    } else if (currentPage === 'home') {
+      if (!currentUser) { navigate('login'); return; }
+      const isAdmin = ADMIN_EMAILS.includes(currentUser.email);
+      main.innerHTML = `
+        <div class="card">
+          <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <div style="flex:1;">
+              <h1>${t('hello')}, ${escapeHtml(currentUser.displayName || currentUser.email)}!</h1>
+              <p>${t('welcomeSub')}</p>
+              <button class="btn-primary" style="width:auto;" onclick="navigate('dashboard')">${t('dashboard')} →</button>
+              <div style="display:flex; gap:1rem; margin-top:1rem;">
+                <div><span style="font-size:1.5rem;">500+</span><br>${t('clients')}</div>
+                <div><span style="font-size:1.5rem;">98%</span><br>${t('successRate')}</div>
+                <div><span style="font-size:1.5rem;">24/7</span><br>${t('support')}</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:1rem;">
+              <div class="card" style="padding:1rem; text-align:center;"><i class="fas fa-headset fa-2x"></i><h4>AI Support</h4><p>24/7</p></div>
+              <div class="card" style="padding:1rem; text-align:center;"><i class="fab fa-whatsapp fa-2x"></i><h4>WhatsApp</h4><p>+255 625 568 661</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="card"><h2>${t('whatWeOffer')}</h2><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem;"><div class="testimonial-card"><i class="fas fa-university"></i><h3>HESLB</h3><p>${t('heslb')}</p></div><div class="testimonial-card"><i class="fas fa-id-card"></i><h3>RITA & NIDA</h3><p>${t('rita')}</p></div><div class="testimonial-card"><i class="fas fa-laptop-code"></i><h3>IT Support</h3><p>${t('itSupport')}</p></div></div></div>
+        <div class="card"><h3><i class="fas fa-question-circle"></i> ${t('faq')}</h3><div id="faqContainer"></div></div>
+      `;
+      const faqs = [
+        { q: t('howRequest'), a: t('howRequestAns') },
+        { q: t('paymentMethods'), a: t('paymentMethodsAns') },
+        { q: t('responseTime'), a: t('responseTimeAns') }
+      ];
+      const faqDiv = document.getElementById('faqContainer');
+      faqDiv.innerHTML = faqs.map((f,i) => `<div class="faq-item"><div class="faq-question" style="cursor:pointer; font-weight:600;" onclick="document.getElementById('faqAns${i}').style.display=document.getElementById('faqAns${i}').style.display==='block'?'none':'block'">${f.q} <i class="fas fa-chevron-down"></i></div><div class="faq-answer" id="faqAns${i}" style="display:none; padding-left:1rem;">${f.a}</div></div>`).join('');
+    } else if (currentPage === 'dashboard') {
+      if (!currentUser) { navigate('login'); return; }
+      const uid = currentUser.uid;
+      const userDataSnap = await db.ref(`users/${uid}`).once('value');
+      const userData = userDataSnap.val() || {};
+      const phone = userData.phoneNumber || '';
+      const requestsSnap = await db.ref(`requests/${uid}`).once('value');
+      const requests = requestsSnap.val() ? Object.values(requestsSnap.val()) : [];
+      main.innerHTML = `
+        <div class="card"><h2>${t('placeRequest')}</h2>
+        <form id="reqForm">
+          <div class="input-group"><label>${t('fullName')}</label><input type="text" id="fullname" value="${escapeHtml(currentUser.displayName || '')}" readonly></div>
+          <div class="input-group"><label>${t('email')}</label><input type="email" id="email" value="${escapeHtml(currentUser.email)}" readonly></div>
+          <div class="input-group"><label>${t('phone')}</label><input type="tel" id="phone" value="${escapeHtml(phone)}" readonly></div>
+          <div class="input-group"><label>${t('gender')}</label><select id="gender"><option value="Male">${t('male')}</option><option value="Female">${t('female')}</option><option value="Other">${t('other')}</option></select></div>
+          <div class="input-group"><label>${t('service')}</label><select id="service">
+            <option value="" disabled selected>${t('selectService')}</option>
+            <option value="HESLB Maombi Mapya" data-price="10000" data-desc="${t('heslbDesc')}">${t('heslb')} - TSh 10,000</option>
+            <option value="RITA Maombi Mapya" data-price="10000" data-desc="${t('ritaDesc')}">${t('rita')} - TSh 10,000</option>
+            <option value="NIDA Maombi Mapya" data-price="5000" data-desc="${t('nidaDesc')}">${t('nida')} - TSh 5,000</option>
+            <option value="Verification ya Cheti" data-price="5000" data-desc="Uthibitishaji wa vyeti mbalimbali.">Verification ya Cheti - TSh 5,000</option>
+            <option value="Napa Reference Number" data-price="3000" data-desc="Kupata namba za marejeo.">Napa Reference Number - TSh 3,000</option>
+            <option value="Computer Windows Installation" data-price="10000" data-desc="Kupiga Windows, kuweka antivirus, kuongeza speed.">Windows Installation - TSh 10,000</option>
+            <option value="Files na Antivirus" data-price="5000" data-desc="Kurepair files, kuondoa virus, backup.">Files & Antivirus - TSh 5,000</option>
+            <option value="Typing Page" data-price="500" data-desc="Kuchapa kurasa kwa ubora.">Typing Page - TSh 500</option>
+          </select>
+          <div id="serviceDescription" class="service-description" style="display:none;"></div>
+          <div class="error" id="serviceErr"></div></div>
+          <div class="input-group"><label>${t('serviceFee')}</label><input type="text" id="price" readonly></div>
+          <div class="input-group"><label>${t('additionalDetails')}</label><textarea id="details" rows="2"></textarea></div>
+          <div class="input-group"><label>${t('uploadFile')}</label><input type="file" id="fileUpload" accept=".jpg,.png,.pdf,.docx"></div>
+          <div class="input-group"><label>${t('paymentMethod')}</label><div id="paymentMethodsGrid" class="payment-methods-grid"></div><input type="hidden" id="selectedMethodDash"><div class="error" id="methodErr"></div></div>
+          <button type="submit" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> ${t('submitPayment')}</button>
+        </form></div>
+        <div class="card"><h2>${t('requestHistory')}</h2><div id="historyList" class="history-list">${requests.length ? requests.map(r => `<div class="history-item"><div><strong>${escapeHtml(r.service)}</strong> <span class="status-badge ${r.status === 'Completed' ? 'status-completed' : (r.status === 'Processing' ? 'status-processing' : '')}">${r.status || t('pending')}</span></div><div>${t('amount')}: TSh ${r.amount.toLocaleString()}</div>${r.details ? `<div>${escapeHtml(r.details)}</div>` : ''}<div style="font-size:0.7rem;">${new Date(r.timestamp).toLocaleString()}</div></div>`).join('') : `<div class="empty">${t('noRequests')}</div>`}</div></div>
+      `;
+      const methods = [
+        { method: 'vodacom', name: 'VODA LIPA', number: '59183849', icon: 'fas fa-mobile-alt' },
+        { method: 'tigo', name: 'TIGO LIPA', number: '45198490', icon: 'fas fa-mobile-alt' },
+        { method: 'airtel', name: 'AIRTEL LIPA', number: '65525676', icon: 'fas fa-mobile-alt' },
+        { method: 'halopesa', name: 'HALOPESA', number: '+255625568661', icon: 'fas fa-wallet' },
+        { method: 'bank', name: 'Bank Transfer', number: 'CRDB 0152836592900', icon: 'fas fa-university' }
+      ];
+      const container = document.getElementById('paymentMethodsGrid');
+      container.innerHTML = methods.map(m => `<div class="payment-method-card" data-method="${m.method}"><i class="${m.icon}"></i><div class="method-name">${m.name}</div><div class="method-number">${m.number}</div></div>`).join('');
+      const cards = document.querySelectorAll('.payment-method-card');
+      const selectedMethod = document.getElementById('selectedMethodDash');
+      cards.forEach(card => card.addEventListener('click', () => { cards.forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); selectedMethod.value = card.dataset.method; document.getElementById('methodErr').innerText=''; }));
+      const serviceSel = document.getElementById('service');
+      const priceField = document.getElementById('price');
+      const descDiv = document.getElementById('serviceDescription');
+      serviceSel.addEventListener('change', () => {
+        const opt = serviceSel.options[serviceSel.selectedIndex];
+        priceField.value = opt && opt.dataset.price ? `TSh ${parseInt(opt.dataset.price).toLocaleString()}` : '';
+        if (opt && opt.dataset.desc) {
+          descDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${opt.dataset.desc}`;
+          descDiv.style.display = 'block';
+        } else {
+          descDiv.style.display = 'none';
+        }
+      });
+      document.getElementById('reqForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const service = serviceSel.value;
+        const details = document.getElementById('details').value.trim();
+        const amount = parseInt(serviceSel.options[serviceSel.selectedIndex]?.dataset.price);
+        const method = selectedMethod.value;
+        const gender = document.getElementById('gender').value;
+        if (!service || !method) { alert('Select service and payment method'); return; }
+        const file = document.getElementById('fileUpload').files[0];
+        let fileUrl = '';
+        if (file) {
+          if (file.size > 5*1024*1024) { alert('File too large (max 5MB)'); return; }
+          const storageRef = storage.ref(`requests/${uid}/${Date.now()}_${file.name}`);
+          await storageRef.put(file);
+          fileUrl = await storageRef.getDownloadURL();
+        }
+        const requestId = Date.now().toString();
+        const requestData = { service, details, amount, paymentMethod: method, status: 'Pending', timestamp: Date.now(), fileUrl, userId: uid, gender };
+        await db.ref(`requests/${uid}/${requestId}`).set(requestData);
+        await db.ref(`allRequests/${requestId}`).set({ ...requestData, userId: uid, userEmail: currentUser.email, userName: currentUser.displayName });
+        const methodNames = { vodacom:'VODA LIPA 59183849', tigo:'TIGO LIPA 45198490', airtel:'AIRTEL LIPA 65525676', halopesa:'HALOPESA +255625568661', bank:'Bank Transfer CRDB 0152836592900' };
+        const message = `📋 *NEW REQUEST*%0A👤 ${currentUser.displayName || currentUser.email}%0A📧 ${currentUser.email}%0A👤 Jinsia: ${gender}%0A🛠️ ${service}%0A💰 TSh ${amount.toLocaleString()}%0A💳 ${methodNames[method]}%0A${details ? `📝 ${details}%0A` : ''}${file ? `📎 ${file.name}%0A` : ''}👤 AMANI ERASMUCE HAULE`;
+        window.open(`https://wa.me/255625568661?text=${encodeURIComponent(message)}`, '_blank');
+        showToast('✅ Request submitted!', 'fa-check-circle');
+        navigate('dashboard');
+      });
+    } else if (currentPage === 'payment') {
+      if (!currentUser) { navigate('login'); return; }
+      const uid = currentUser.uid;
+      const userDataSnap = await db.ref(`users/${uid}`).once('value');
+      const userData = userDataSnap.val() || {};
+      const phone = userData.phoneNumber || '';
+      main.innerHTML = `
+        <div class="card"><h2>${t('payment')}</h2>
+        <form id="payForm">
+          <div class="input-group"><label>${t('fullName')}</label><input type="text" id="payName" value="${escapeHtml(currentUser.displayName || '')}" readonly></div>
+          <div class="input-group"><label>${t('email')}</label><input type="email" id="payEmail" value="${escapeHtml(currentUser.email)}" readonly></div>
+          <div class="input-group"><label>${t('phone')}</label><input type="tel" id="payPhone" value="${escapeHtml(phone)}" placeholder="+255XXXXXXXXX"></div>
+          <div class="input-group"><label>${t('amount')} (TSh)</label><input type="number" id="payAmount" required></div>
+          <div class="input-group"><label>${t('paymentMethod')}</label><div id="paymentMethodsGridPay" class="payment-methods-grid"></div><input type="hidden" id="selectedMethodPay"><div class="error" id="payMethodErr"></div></div>
+          <button type="submit" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> ${t('submitPayment')}</button>
+        </form>
+        <div class="receiver-info" style="margin-top:1rem; text-align:center;"><i class="fas fa-user-check"></i> <strong>Receiver:</strong> AMANI ERASMUCE HAULE</div></div>
+      `;
+      const methods = [
+        { method: 'vodacom', name: 'VODA LIPA', number: '59183849', icon: 'fas fa-mobile-alt' },
+        { method: 'tigo', name: 'TIGO LIPA', number: '45198490', icon: 'fas fa-mobile-alt' },
+        { method: 'airtel', name: 'AIRTEL LIPA', number: '65525676', icon: 'fas fa-mobile-alt' },
+        { method: 'halopesa', name: 'HALOPESA', number: '+255625568661', icon: 'fas fa-wallet' },
+        { method: 'bank', name: 'Bank Transfer', number: 'CRDB 0152836592900', icon: 'fas fa-university' }
+      ];
+      const container = document.getElementById('paymentMethodsGridPay');
+      container.innerHTML = methods.map(m => `<div class="payment-method-card" data-method="${m.method}"><i class="${m.icon}"></i><div class="method-name">${m.name}</div><div class="method-number">${m.number}</div></div>`).join('');
+      const cards = document.querySelectorAll('#paymentMethodsGridPay .payment-method-card');
+      const selectedMethod = document.getElementById('selectedMethodPay');
+      cards.forEach(card => card.addEventListener('click', () => { cards.forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); selectedMethod.value = card.dataset.method; document.getElementById('payMethodErr').innerText=''; }));
+      document.getElementById('payForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const amount = document.getElementById('payAmount').value;
+        const method = selectedMethod.value;
+        if (!amount || amount<=0) { alert('Enter amount'); return; }
+        if (!method) { alert('Select payment method'); return; }
+        const methodNames = { vodacom:'VODA LIPA 59183849', tigo:'TIGO LIPA 45198490', airtel:'AIRTEL LIPA 65525676', halopesa:'HALOPESA +255625568661', bank:'Bank Transfer CRDB 0152836592900' };
+        const message = `💳 *PAYMENT*%0A👤 ${currentUser.displayName || currentUser.email}%0A💰 TSh ${amount}%0A💳 ${methodNames[method]}%0A👤 AMANI ERASMUCE HAULE`;
+        window.open(`https://wa.me/255625568661?text=${encodeURIComponent(message)}`, '_blank');
+        await db.ref(`payments/${currentUser.uid}/${Date.now()}`).set({ amount, method, date: new Date().toISOString(), userId: currentUser.uid });
+        showToast(`✅ Payment of TSh ${amount} recorded!`, 'fa-check-circle');
+        document.getElementById('payAmount').value = '';
+      });
+    } else if (currentPage === 'admin') {
+      if (!currentUser || !ADMIN_EMAILS.includes(currentUser.email)) { navigate('home'); return; }
+      const snap = await db.ref('allRequests').once('value');
+      const requests = snap.val() ? Object.values(snap.val()) : [];
+      const monthlySales = {};
+      requests.forEach(r => { const m = new Date(r.timestamp).toLocaleDateString('en',{year:'numeric',month:'numeric'}); monthlySales[m] = (monthlySales[m] || 0) + r.amount; });
+      let salesHtml = `<h3>${t('salesReport')}</h3><ul>`;
+      for (const [m, total] of Object.entries(monthlySales)) salesHtml += `<li>${m}: TSh ${total.toLocaleString()}</li>`;
+      salesHtml += '</ul>';
+      main.innerHTML = `<div class="card"><h2>${t('allRequests')}</h2><div id="adminRequests" class="history-list">${requests.map(r => `<div class="history-item"><strong>${escapeHtml(r.userName || r.userEmail)}</strong> - ${r.service}<br>${t('amount')}: TSh ${r.amount}<br>${t('status')}: <select class="status-select" data-id="${r.timestamp}"><option ${r.status==='Pending'?'selected':''}>Pending</option><option ${r.status==='Processing'?'selected':''}>Processing</option><option ${r.status==='Completed'?'selected':''}>Completed</option></select><br>${r.details ? `Details: ${r.details}<br>` : ''}${r.fileUrl ? `<a href="${r.fileUrl}" target="_blank">View File</a><br>` : ''}</div>`).join('')}</div></div><div class="card">${salesHtml}</div>`;
+      document.querySelectorAll('.status-select').forEach(sel => {
+        sel.addEventListener('change', async (e) => {
+          const newStatus = sel.value;
+          const requestId = sel.dataset.id;
+          await db.ref(`allRequests/${requestId}`).update({ status: newStatus });
+          const reqSnap = await db.ref(`allRequests/${requestId}`).once('value');
+          const req = reqSnap.val();
+          if (req && req.userId) await db.ref(`requests/${req.userId}/${requestId}`).update({ status: newStatus });
+          alert('Status updated');
+        });
+      });
+    }
+  }
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      currentUser = user;
+      db.ref(`users/${user.uid}`).once('value').then(snap => {
+        const data = snap.val();
+        if (data) { currentUser.displayName = data.fullName || user.displayName; currentUser.phoneNumber = data.phoneNumber; }
+        if (currentPage === 'landing' || currentPage === 'login' || currentPage === 'register') navigate('home');
+        else render();
+      });
+    } else {
+      currentUser = null;
+      if (currentPage !== 'landing' && currentPage !== 'login' && currentPage !== 'register' && currentPage !== 'forgot') navigate('landing');
+      else render();
+    }
+  });
+
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
+  setLanguage('en');
+  window.togglePw = togglePw;
+  window.navigate = navigate;
+  window.logout = logout;
+</script>
+</body>
+</html>
+```
