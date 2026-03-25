@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mr. Haule Services | Academic & IT Support</title>
+  <meta name="description" content="Professional academic and IT support services in Tanzania.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    /* Global font Times New Roman */
+    * {
+      font-family: 'Times New Roman', Times, serif;
+    }
+    body {
+      background: linear-gradient(145deg, #eef2ff 0%, #ffffff 100%);
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .font-bold, .gradient-text {
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: 700;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #1e3c2c, #1e40af, #2563eb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 2rem;
+      transition: all 0.3s ease;
+    }
+    .service-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.2);
+    }
+    .service-list {
+      list-style: disc;
+      padding-left: 1.2rem;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
+    .service-list li {
+      margin-bottom: 0.25rem;
+    }
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .price-table th, .price-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(59,130,246,0.2);
+    }
+    .price-table th {
+      background: rgba(59,130,246,0.1);
+      font-weight: 700;
+    }
+    .price-table tr:hover {
+      background: rgba(59,130,246,0.05);
+    }
+    .tab-active {
+      border-bottom: 3px solid #3b82f6;
+      color: #3b82f6;
+      font-weight: 600;
+    }
+    .chatbot-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1000;
+    }
+    .chatbot-toggle {
+      background: linear-gradient(135deg, #1e3c2c, #2563eb);
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .chatbot-window {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      width: 320px;
+      background: rgba(30,30,40,0.95);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      border: 1px solid rgba(59,130,246,0.5);
+    }
+    .chat-header {
+      background: #2563eb;
+      padding: 12px;
+      color: white;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+    .chat-messages {
+      height: 280px;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .message {
+      max-width: 85%;
+      padding: 8px 12px;
+      border-radius: 18px;
+      font-size: 0.85rem;
+    }
+    .user-message {
+      background: #3b82f6;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .bot-message {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .chat-input input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 12px;
+      color: white;
+      outline: none;
+    }
+    .chat-input button {
+      background: #3b82f6;
+      border: none;
+      padding: 0 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .toast-3d {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      z-index: 2000;
+      animation: fadeUp 0.3s ease-out;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2), 0 0 0 2px rgba(59,130,246,0.3);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .modal-3d {
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid #3b82f6;
+      border-radius: 2rem;
+      box-shadow: 0 25px 40px rgba(0,0,0,0.4);
+    }
+    .nav-item {
+      transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 4px;
+    }
+    .nav-item:hover {
+      border-bottom-color: #3b82f6;
+      color: #2563eb;
+    }
+    .site-header {
+      text-align: center;
+      padding: 1rem 0 0.5rem;
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .nav-bar {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0.75rem 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="flex justify-center items-center gap-3">
+    <img src="logo.jpg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-blue-500" onerror="this.onerror=null; this.src='https://placehold.co/50x50/1e3c2c/white?text=MH';">
+    <span class="text-3xl md:text-4xl font-extrabold gradient-text">MR. HAULE SERVICES</span>
+  </div>
+</div>
+
+<div class="nav-bar sticky top-0 z-40 shadow-sm">
+  <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-6 text-sm font-medium">
+    <a href="#home" class="nav-item px-2 py-1 lowercase">home</a>
+    <a href="#services" class="nav-item px-2 py-1 lowercase">services</a>
+    <a href="#testimonials" class="nav-item px-2 py-1 lowercase">testimonials</a>
+    <a href="#contact" class="nav-item px-2 py-1 lowercase">contact</a>
+    <button id="lang-toggle" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-1"><i class="fas fa-globe"></i> <span id="lang-text">English</span></button>
+    <div class="flex gap-2">
+      <a id="admin-btn" href="admin.html" class="bg-purple-600 text-white px-4 py-2 rounded-full shadow-md hover:bg-purple-700 hidden"><i class="fas fa-crown"></i> Admin</a>
+      <button onclick="openModal('login-modal')" class="bg-blue-600 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-700"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <button onclick="openModal('register-modal')" class="bg-gray-200 text-blue-800 px-4 py-2 rounded-full shadow-md hover:bg-gray-300"><i class="fas fa-user-plus"></i> Register</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hero Section -->
+<section id="home" class="pt-16 pb-16 text-center">
+  <div class="max-w-5xl mx-auto px-4">
+    <h1 class="text-5xl md:text-7xl font-black gradient-text mb-6" data-key="hero_title">Academic & IT Support<br>Made Simple</h1>
+    <p class="text-xl text-gray-700 max-w-2xl mx-auto" data-key="hero_desc">Trusted solutions for HESLB, RITA, NIDA, University Applications, Academic Work, IT Support & Consultation.</p>
+    <div class="mt-10 flex justify-center gap-4">
+      <button onclick="openModal('support-modal')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold shadow-lg"><i class="fas fa-phone-alt mr-2"></i> <span data-key="get_support">Get Support</span></button>
+      <a href="https://wa.me/255625568661" target="_blank" class="bg-gray-800 hover:bg-gray-900 text-white px-8 py-3 rounded-full font-bold"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section with Tabs -->
+<section id="services" class="py-16 px-6 bg-white/40">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex justify-center gap-6 mb-10 border-b border-gray-200">
+      <button id="tab-services-btn" class="py-2 px-6 text-lg font-semibold tab-active transition" data-key="services_tab">Services</button>
+      <button id="tab-prices-btn" class="py-2 px-6 text-lg font-semibold text-gray-500 transition" data-key="prices_tab">Price Only</button>
+    </div>
+
+    <!-- Services Tab Content (Detailed cards with sub-services, no prices) -->
+    <div id="services-tab" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <!-- HESLB -->
+      <div class="glass-card service-card p-6 rounded-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fas fa-file-invoice text-2xl text-blue-600"></i>
+          <h3 class="text-xl font-bold">HESLB</h3>
+        </div>
+        <ul class="service-list">
+          <li>Maombi ya Mkopo</li>
+          <li>Marekebisho ya Taarifa</li>
+          <li>Uhakiki wa Nyaraka</li>
+          <li>Mwongozo wa Maombi</li>
+        </ul>
+      </div>
+      <!-- RITA -->
+      <div class="glass-card service-card p-6 rounded-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fas fa-id-card text-2xl text-blue-600"></i>
+          <h3 class="text-xl font-bold">RITA</h3>
+        </div>
+        <ul class="service-list">
+          <li>Vyeti vya Kuzaliwa/Kifo</li>
+          <li>Marekebisho ya Taarifa</li>
+          <li>Ufuatiliaji wa Vyeti</li>
+        </ul>
+      </div>
+      <!-- NIDA -->
+      <div class="glass-card service-card p-6 rounded-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fas fa-address-card text-2xl text-blue-600"></i>
+          <h3 class="text-xl font-bold">NIDA</h3>
+        </div>
+        <ul class="service-list">
+          <li>Usajili wa NIDA</li>
+          <li>Marekebisho ya Taarifa</li>
+          <li>Kupata Namba ya NIDA</li>
+        </ul>
+      </div>
+      <!-- University Applications -->
+      <div class="glass-card service-card p-6 rounded-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
+          <h3 class="text-xl font-bold">University Applications</h3>
+        </div>
+        <ul class="service-list">
+          <li>Maombi ya Udahili</li>
+          <li>Uchaguzi wa Kozi</li>
+          <li>Mwongozo wa Vyuo</li>
+        </ul>
+      </div>
+      <!-- Academic Work -->
+      <div class="glass-card service-card p-6 rounded-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fas fa-pen-fancy text-2xl text-blue-600"></i>
+          <h3 class="text-xl font-bold">Academic Work</h3>
+        </div>
+        <ul class="service-list">
+          <li>Field Report</li>
+          <li>Assignments (kwa ukurasa)</li>
+          <li>Research</li>
+          <li>Presentations</li>
+          <li>Barua Rasmi</li>
+        </ul>
+      </div>
+      <!-- IT Support -->
+      <div class="glass-card service-card p-6 rounded-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fas fa-laptop-code text-2xl text-blue-600"></i>
+          <h3 class="text-xl font-bold">IT Support</h3>
+        </div>
+        <ul class="service-list">
+          <li>Kupiga Windows</li>
+          <li>Kuformat PC/Laptop</li>
+          <li>Kuweka Antivirus & Kuondoa Virus</li>
+          <li>Kurepair Files Zilizoharibika</li>
+          <li>Kuongeza Speed ya PC/Laptop</li>
+          <li>Kuinstall Software Muhimu</li>
+          <li>Kurekebisha Errors za Mfumo</li>
+          <li>Backup na Restore Mafaili</li>
+          <li>Kusafisha PC na Kuboresha Performance</li>
+          <li>Huduma Nyingine za IT</li>
+        </ul>
+      </div>
+      <!-- TIN NUMBER -->
+      <div class="glass-card service-card p-6 rounded-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fas fa-chart-line text-2xl text-blue-600"></i>
+          <h3 class="text-xl font-bold">TIN NUMBER</h3>
+        </div>
+        <ul class="service-list">
+          <li>Usajili wa TIN</li>
+          <li>Marekebisho ya Taarifa</li>
+        </ul>
+      </div>
+      <!-- LOSS REPORT -->
+      <div class="glass-card service-card p-6 rounded-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fas fa-file-alt text-2xl text-blue-600"></i>
+          <h3 class="text-xl font-bold">LOSS REPORT</h3>
+        </div>
+        <ul class="service-list">
+          <li>Taarifa ya Hasara</li>
+          <li>Ufuatiliaji wa Taarifa</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Price Tab Content (list of all sub‑services with prices) -->
+    <div id="prices-tab" class="glass-card p-6 hidden">
+      <h3 class="text-2xl font-bold mb-4 text-center text-blue-800">Price List (TZS)</h3>
+      <div class="overflow-x-auto">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>Service Category</th>
+              <th>Sub‑service</th>
+              <th>Price (TZS)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- HESLB -->
+            <tr><td>HESLB</td><td>Maombi ya Mkopo</td><td>10,000</td></tr>
+            <tr><td>HESLB</td><td>Marekebisho ya Taarifa</td><td>10,000</td></tr>
+            <tr><td>HESLB</td><td>Uhakiki wa Nyaraka</td><td>5,000</td></tr>
+            <tr><td>HESLB</td><td>Mwongozo wa Maombi</td><td>5,000</td></tr>
+            <!-- RITA -->
+            <tr><td>RITA</td><td>Vyeti vya Kuzaliwa/Kifo</td><td>10,000</td></tr>
+            <tr><td>RITA</td><td>Marekebisho ya Taarifa</td><td>8,000</td></tr>
+            <tr><td>RITA</td><td>Ufuatiliaji wa Vyeti</td><td>5,000</td></tr>
+            <!-- NIDA -->
+            <tr><td>NIDA</td><td>Usajili wa NIDA</td><td>10,000</td></tr>
+            <tr><td>NIDA</td><td>Marekebisho ya Taarifa</td><td>8,000</td></tr>
+            <tr><td>NIDA</td><td>Kupata Namba ya NIDA</td><td>5,000</td></tr>
+            <!-- University Applications -->
+            <tr><td>University Applications</td><td>Maombi ya Udahili</td><td>10,000</td></tr>
+            <tr><td>University Applications</td><td>Uchaguzi wa Kozi</td><td>5,000</td></tr>
+            <tr><td>University Applications</td><td>Mwongozo wa Vyuo</td><td>5,000</td></tr>
+            <!-- Academic Work -->
+            <tr><td>Academic Work</td><td>Field Report</td><td>15,000</td></tr>
+            <tr><td>Academic Work</td><td>Assignments (kwa ukurasa)</td><td>500/ukurasa</td></tr>
+            <tr><td>Academic Work</td><td>Research</td><td>20,000</td></tr>
+            <tr><td>Academic Work</td><td>Presentations</td><td>10,000</td></tr>
+            <tr><td>Academic Work</td><td>Barua Rasmi</td><td>5,000</td></tr>
+            <!-- IT Support -->
+            <tr><td>IT Support</td><td>Kupiga Windows</td><td>15,000</td></tr>
+            <tr><td>IT Support</td><td>Kuformat PC/Laptop</td><td>10,000</td></tr>
+            <tr><td>IT Support</td><td>Kuweka Antivirus na Kuondoa Virus</td><td>10,000</td></tr>
+            <tr><td>IT Support</td><td>Kurepair Files Zilizoharibika</td><td>8,000</td></tr>
+            <tr><td>IT Support</td><td>Kuongeza Speed ya PC/Laptop</td><td>5,000</td></tr>
+            <tr><td>IT Support</td><td>Kuinstall Software Muhimu</td><td>5,000</td></tr>
+            <tr><td>IT Support</td><td>Kurekebisha Errors za Mfumo</td><td>10,000</td></tr>
+            <tr><td>IT Support</td><td>Backup na Restore Mafaili</td><td>8,000</td></tr>
+            <tr><td>IT Support</td><td>Kusafisha PC na Kuboresha Performance</td><td>5,000</td></tr>
+            <tr><td>IT Support</td><td>Huduma Nyingine za IT</td><td>20,000</td></tr>
+            <!-- TIN NUMBER -->
+            <tr><td>TIN NUMBER</td><td>Usajili wa TIN</td><td>15,000</td></tr>
+            <tr><td>TIN NUMBER</td><td>Marekebisho ya Taarifa</td><td>10,000</td></tr>
+            <!-- LOSS REPORT -->
+            <tr><td>LOSS REPORT</td><td>Taarifa ya Hasara</td><td>20,000</td></tr>
+            <tr><td>LOSS REPORT</td><td>Ufuatiliaji wa Taarifa</td><td>10,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="py-16 px-6">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-4xl font-bold text-center mb-12 text-blue-800" data-key="testimonials_title">What Clients Say</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="glass-card p-5 rounded-xl"><i class="fas fa-quote-left text-blue-600"></i><p class="mt-2 italic">"Fast HESLB processing, highly recommend!"</p><p class="font-bold mt-3">- Anderson Mpapapayumo</p></div>
+      <div class="glass-card p-5 rounded-xl"><i class="fas fa-quote-left text-blue-600"></i><p class="mt-2 italic">"Professional IT support, solved my laptop issues."</p><p class="font-bold mt-3">- Yeriko Kitosi</p></div>
+      <div class="glass-card p-5 rounded-xl"><i class="fas fa-quote-left text-blue-600"></i><p class="mt-2 italic">"University application was seamless. Thank you!"</p><p class="font-bold mt-3">- Rose Ngalawa</p></div>
+      <div class="glass-card p-5 rounded-xl"><i class="fas fa-quote-left text-blue-600"></i><p class="mt-2 italic">"Reliable consultation & academic support."</p><p class="font-bold mt-3">- Erasmuce Haule</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form -->
+<section id="contact" class="py-16 px-6">
+  <div class="max-w-2xl mx-auto glass-card rounded-2xl p-8">
+    <h3 class="text-3xl font-bold text-center mb-6 text-blue-800" data-key="contact_title">Contact Us</h3>
+    <form id="contact-form" class="space-y-4">
+      <input type="text" id="contact-name" placeholder="Full Name" class="w-full p-3 rounded-xl bg-white/80 border border-gray-300" required>
+      <input type="email" id="contact-email" placeholder="Email Address" class="w-full p-3 rounded-xl bg-white/80 border border-gray-300" required>
+      <textarea id="contact-msg" rows="4" placeholder="Your Message" class="w-full p-3 rounded-xl bg-white/80 border border-gray-300" required></textarea>
+      <button type="submit" class="bg-blue-600 w-full text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition"><i class="fas fa-paper-plane mr-2"></i> <span data-key="send_message">Send Message</span></button>
+    </form>
+  </div>
+</section>
+
+<footer class="bg-gray-900 text-white py-8 text-center">
+  <p>© 2025 Mr. Haule Services — Academic & IT Solutions. All Rights Reserved.</p>
+  <div class="flex justify-center gap-6 mt-3">
+    <a href="https://wa.me/255625568661" class="text-blue-400 text-2xl"><i class="fab fa-whatsapp"></i></a>
+  </div>
+</footer>
+
+<!-- Modals (unchanged) -->
+<div id="login-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div class="modal-3d rounded-2xl p-8 w-full max-w-md mx-4">
+    <h2 class="text-3xl font-bold text-white mb-4" data-key="login_title">Login</h2>
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="Email" class="w-full p-3 rounded-lg mb-3 bg-white/20 text-white" required>
+      <input type="password" id="login-password" placeholder="Password" class="w-full p-3 rounded-lg mb-4 bg-white/20 text-white" required>
+      <button type="submit" class="bg-blue-500 w-full py-3 rounded-xl font-bold text-white">Login</button>
+      <p class="text-center text-white mt-3"><button type="button" onclick="openModal('forgot-modal')" class="underline text-blue-300">Forgot Password?</button></p>
+    </form>
+    <button onclick="closeModal('login-modal')" class="absolute top-3 right-4 text-white text-2xl">&times;</button>
+  </div>
+</div>
+
+<div id="register-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div class="modal-3d rounded-2xl p-8 w-full max-w-md mx-4">
+    <h2 class="text-3xl font-bold text-white mb-4" data-key="register_title">Create Account</h2>
+    <form id="register-form">
+      <input type="text" id="reg-fullname" placeholder="Full Name" class="w-full p-3 rounded-lg mb-3 bg-white/20 text-white" required>
+      <input type="email" id="reg-email" placeholder="Email" class="w-full p-3 rounded-lg mb-3 bg-white/20 text-white" required>
+      <input type="tel" id="reg-phone" placeholder="+255XXXXXXXXX" class="w-full p-3 rounded-lg mb-3 bg-white/20 text-white" required>
+      <select id="reg-gender" class="w-full p-3 rounded-lg mb-3 bg-white/20 text-white">
+        <option>Male</option><option>Female</option><option>Other</option>
+      </select>
+      <input type="password" id="reg-password" placeholder="Password (min 6)" class="w-full p-3 rounded-lg mb-4 bg-white/20 text-white" required>
+      <button type="submit" class="bg-blue-600 w-full py-3 rounded-xl font-bold">Register</button>
+    </form>
+    <button onclick="closeModal('register-modal')" class="absolute top-3 right-4 text-white text-2xl">&times;</button>
+  </div>
+</div>
+
+<div id="forgot-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div class="modal-3d rounded-2xl p-8 w-full max-w-md mx-4">
+    <h2 class="text-2xl font-bold text-white">Reset Password</h2>
+    <form id="forgot-form">
+      <input type="email" id="reset-email" placeholder="Email address" class="w-full p-3 rounded-lg mt-4 bg-white/20 text-white" required>
+      <button type="submit" class="bg-blue-500 w-full mt-4 py-3 rounded-xl font-bold">Send Reset Link</button>
+      <p class="text-center text-white text-sm mt-3">Angalia folder ya spam kama hujapokea barua.</p>
+    </form>
+    <button onclick="closeModal('forgot-modal')" class="absolute top-3 right-4 text-white text-2xl">&times;</button>
+  </div>
+</div>
+
+<div id="support-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div class="modal-3d rounded-2xl p-8 w-full max-w-md mx-4">
+    <h2 class="text-2xl font-bold text-white mb-4">Mawasiliano Yetu</h2>
+    <div class="space-y-3 text-white">
+      <p><i class="fas fa-phone-alt text-blue-400 mr-2"></i> <strong>Simu / WhatsApp:</strong></p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>+255 625 568 661</li>
+        <li>+255 692 584 825</li>
+        <li>+255 745 014 719</li>
+        <li>+255 656 278 661</li>
+      </ul>
+      <p><i class="fas fa-envelope text-blue-400 mr-2"></i> <strong>Barua pepe ya Admin:</strong><br>hamanierasmuce@gmail.com</p>
+    </div>
+    <button onclick="closeModal('support-modal')" class="absolute top-3 right-4 text-white text-2xl">&times;</button>
+  </div>
+</div>
+
+<!-- Chatbot -->
+<div class="chatbot-container">
+  <div class="chatbot-toggle" id="chatbot-toggle"><i class="fas fa-robot text-white text-2xl"></i></div>
+  <div class="chatbot-window" id="chatbot-window">
+    <div class="chat-header"><span><i class="fas fa-headset"></i> Mr. Haule AI Assistant</span><button id="close-chat" style="background: none; border: none; color: white; cursor: pointer;">&times;</button></div>
+    <div class="chat-messages" id="chat-messages"><div class="message bot-message">Hello! I'm your AI assistant. Ask me about services, pricing, or how to get support.</div></div>
+    <div class="chat-input"><input type="text" id="chat-input" placeholder="Type your question..."><button id="chat-send"><i class="fas fa-paper-plane"></i></button></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+  // ========== REPLACE WITH YOUR FIREBASE CONFIG ==========
+  const firebaseConfig = {
+    apiKey: "AIzaSyAOpjaV41QyCJGO_ptv_gmD_MYFWCcSA6k",
+    authDomain: "haule-81f1d.firebaseapp.com",
+    databaseURL: "https://haule-81f1d-default-rtdb.firebaseio.com",
+    projectId: "haule-81f1d",
+    storageBucket: "haule-81f1d.firebasestorage.app",
+    messagingSenderId: "612778536991",
+    appId: "1:612778536991:web:d6c6fb2495984de7fd652a"
+  };
+  // ======================================================
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  window.showToast = (msg, isError = false) => {
+    const toast = document.createElement('div');
+    toast.className = 'toast-3d';
+    if (isError) toast.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
+    else toast.style.background = "linear-gradient(135deg, #2563eb, #1e40af)";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  };
+
+  window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+  window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+  window.showForgotPassword = () => { closeModal('login-modal'); openModal('forgot-modal'); };
+
+  // Language Switcher (English/Kiswahili)
+  const translations = {
+    en: {
+      hero_title: "Academic & IT Support<br>Made Simple",
+      hero_desc: "Trusted solutions for HESLB, RITA, NIDA, University Applications, Academic Work, IT Support & Consultation.",
+      get_support: "Get Support",
+      services_tab: "Services",
+      prices_tab: "Price Only",
+      testimonials_title: "What Clients Say",
+      contact_title: "Contact Us",
+      send_message: "Send Message",
+      login_title: "Login",
+      register_title: "Create Account"
+    },
+    sw: {
+      hero_title: "Msaada wa Kitaaluma na Teknolojia<br>Kwa Urahisi",
+      hero_desc: "Suluhisho la kuaminika kwa HESLB, RITA, NIDA, Maombi ya Vyuo, Kazi za Kitaaluma, Msaada wa IT na Ushauri.",
+      get_support: "Pata Msaada",
+      services_tab: "Huduma",
+      prices_tab: "Bei Pekee",
+      testimonials_title: "Wateja Wetu Wasemavyo",
+      contact_title: "Wasiliana Nasi",
+      send_message: "Tuma Ujumbe",
+      login_title: "Ingia",
+      register_title: "Jisajili"
+    }
+  };
+  let currentLang = localStorage.getItem('lang') || 'en';
+  function applyLanguage(lang) {
+    const elements = document.querySelectorAll('[data-key]');
+    elements.forEach(el => {
+      const key = el.getAttribute('data-key');
+      if (translations[lang][key]) {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = translations[lang][key];
+        } else {
+          el.innerHTML = translations[lang][key];
+        }
+      }
+    });
+    document.getElementById('lang-text').innerText = lang === 'en' ? 'English' : 'Kiswahili';
+    localStorage.setItem('lang', lang);
+  }
+  document.getElementById('lang-toggle').addEventListener('click', () => {
+    currentLang = currentLang === 'en' ? 'sw' : 'en';
+    applyLanguage(currentLang);
+  });
+  applyLanguage(currentLang);
+
+  // Tab switching logic
+  const servicesTabDiv = document.getElementById('services-tab');
+  const pricesTabDiv = document.getElementById('prices-tab');
+  const servicesBtn = document.getElementById('tab-services-btn');
+  const pricesBtn = document.getElementById('tab-prices-btn');
+
+  function showServicesTab() {
+    servicesTabDiv.classList.remove('hidden');
+    pricesTabDiv.classList.add('hidden');
+    servicesBtn.classList.add('tab-active');
+    servicesBtn.classList.remove('text-gray-500');
+    pricesBtn.classList.remove('tab-active');
+    pricesBtn.classList.add('text-gray-500');
+  }
+  function showPricesTab() {
+    pricesTabDiv.classList.remove('hidden');
+    servicesTabDiv.classList.add('hidden');
+    pricesBtn.classList.add('tab-active');
+    pricesBtn.classList.remove('text-gray-500');
+    servicesBtn.classList.remove('tab-active');
+    servicesBtn.classList.add('text-gray-500');
+  }
+  servicesBtn.addEventListener('click', showServicesTab);
+  pricesBtn.addEventListener('click', showPricesTab);
+
+  // Login, Register, Forgot, EmailJS, Chatbot (unchanged)
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      showToast('Login successful! Redirecting...');
+      setTimeout(() => window.location.href = 'dashboard.html', 1200);
+      closeModal('login-modal');
+    } catch (err) { showToast(err.message, true); }
+  });
+
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fullName = document.getElementById('reg-fullname').value;
+    const email = document.getElementById('reg-email').value;
+    let phone = document.getElementById('reg-phone').value;
+    const gender = document.getElementById('reg-gender').value;
+    const password = document.getElementById('reg-password').value;
+    if (!/^\+255[0-9]{9}$/.test(phone)) { showToast('Phone must be +255 followed by 9 digits', true); return; }
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+      await set(ref(db, `users/${uid}`), { fullName, email, phone, gender, uid });
+      showToast('Registration successful! Please login.');
+      closeModal('register-modal');
+    } catch (err) { showToast(err.message, true); }
+  });
+
+  document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('reset-email').value.trim();
+    if (!email) { showToast('Enter your email', true); return; }
+    try {
+      const usersSnap = await get(ref(db, 'users'));
+      let userExists = false;
+      if (usersSnap.exists()) {
+        const users = usersSnap.val();
+        userExists = Object.values(users).some(u => u.email === email);
+      }
+      if (!userExists) {
+        showToast('Email not registered. Please sign up first.', true);
+        return;
+      }
+      await sendPasswordResetEmail(auth, email);
+      showToast('Password reset email sent! Check your inbox (and spam).');
+      closeModal('forgot-modal');
+      document.getElementById('reset-email').value = '';
+    } catch (err) {
+      console.error(err);
+      if (err.code === 'auth/user-not-found') {
+        showToast('Email not found. Please sign up.', true);
+      } else if (err.code === 'auth/too-many-requests') {
+        showToast('Too many requests. Try again later.', true);
+      } else {
+        showToast(err.message, true);
+      }
+    }
+  });
+
+  emailjs.init('Py96WzK4ZeEscFnVW');
+  document.getElementById('contact-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('contact-name').value;
+    const email = document.getElementById('contact-email').value;
+    const message = document.getElementById('contact-msg').value;
+    emailjs.send('service_81kt9sf', 'template_37mnvci', { name, email, message })
+      .then(() => { showToast('Message sent successfully!'); document.getElementById('contact-form').reset(); })
+      .catch(() => showToast('Failed to send. Try again later.', true));
+  });
+
+  const chatToggle = document.getElementById('chatbot-toggle');
+  const chatWindow = document.getElementById('chatbot-window');
+  const closeChat = document.getElementById('close-chat');
+  const chatInput = document.getElementById('chat-input');
+  const chatSend = document.getElementById('chat-send');
+  const chatMessages = document.getElementById('chat-messages');
+
+  chatToggle.onclick = () => chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
+  closeChat.onclick = () => chatWindow.style.display = 'none';
+
+  function addMessage(text, isUser) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+    msgDiv.innerText = text;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function botReply(userMsg) {
+    const lower = userMsg.toLowerCase();
+    if (lower.includes('heslb')) return 'HESLB: msaada wa mkopo, marekebisho, uhakiki na mwongozo.';
+    if (lower.includes('rita')) return 'RITA: vyeti vya kuzaliwa/kifo, marekebisho, ufuatiliaji.';
+    if (lower.includes('nida')) return 'NIDA: usajili, marekebisho, kupata namba ya NIDA.';
+    if (lower.includes('university') || lower.includes('vyuo')) return 'Maombi ya Vyuo: udahili, uchaguzi wa kozi, mwongozo.';
+    if (lower.includes('academic') || lower.includes('kazi')) return 'Kazi za Kitaaluma: field report, assignments, research, presentations, barua rasmi.';
+    if (lower.includes('computer') || lower.includes('it')) return 'IT Support: windows, formatting, antivirus, repair, speed up, software, backup, cleaning.';
+    if (lower.includes('tin')) return 'TIN NUMBER: usajili na marekebisho.';
+    if (lower.includes('loss')) return 'LOSS REPORT: taarifa ya hasara na ufuatiliaji.';
+    return "Ninakusaidia kuhusu huduma zetu: HESLB, RITA, NIDA, Maombi ya Vyuo, Kazi za Kitaaluma, IT Support, TIN NUMBER, LOSS REPORT. Uliza maelezo zaidi.";
+  }
+
+  function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    addMessage(text, true);
+    chatInput.value = '';
+    setTimeout(() => { addMessage(botReply(text), false); }, 300);
+  }
+  chatSend.onclick = sendMessage;
+  chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+  onAuthStateChanged(auth, (user) => {
+    const adminBtn = document.getElementById('admin-btn');
+    if (user && user.email === 'hamanierasmuce@gmail.com') {
+      if (adminBtn) adminBtn.classList.remove('hidden');
+    } else {
+      if (adminBtn) adminBtn.classList.add('hidden');
+    }
+    if (user && (window.location.pathname === '/' || window.location.pathname.includes('index.html'))) {
+      window.location.href = 'dashboard.html';
+    }
+  });
+</script>
+</body>
+</html>
+```
