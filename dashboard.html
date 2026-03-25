@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Mr. Haule Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f3f4f6; }
+    .glass-card { background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border-radius: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+    .toast-3d { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 12px 24px; border-radius: 40px; font-weight: 600; z-index: 2000; animation: fadeUp 0.3s; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    .gradient-text { background: linear-gradient(135deg, #1e3c2c, #f4c542, #2c3e50); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  </style>
+</head>
+<body class="p-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold gradient-text">Welcome, <span id="user-name">User</span></h1>
+      <button id="logout-btn" class="bg-red-600 text-white px-5 py-2 rounded-full shadow hover:bg-red-700"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <!-- Request Form -->
+    <div class="glass-card p-6 mb-8">
+      <h2 class="text-2xl font-bold mb-4">Submit a New Request</h2>
+      <form id="request-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="fullname" placeholder="Full Name" readonly class="bg-gray-100 p-3 rounded-xl border">
+        <input type="email" id="email" readonly class="bg-gray-100 p-3 rounded-xl border">
+        <input type="tel" id="phone" placeholder="+255XXXXXXXXX" class="p-3 rounded-xl border" required>
+        <select id="gender" class="p-3 rounded-xl border"><option>Male</option><option>Female</option><option>Other</option></select>
+        <select id="service" class="p-3 rounded-xl border" required>
+          <option value="">Chagua Huduma</option>
+          <option value="HESLB">HESLB - TZS 10,000</option>
+          <option value="RITA">RITA (Vyeti vya Kuzaliwa/Kifo) - TZS 10,000</option>
+          <option value="NIDA">NIDA (Usajili/Marekebisho) - TZS 10,000</option>
+          <option value="University Applications">Maombi ya Vyuo - TZS 5,000</option>
+          <option value="Academic Work">Kazi za Kitaaluma (kwa ukurasa) - TZS 500/ukurasa</option>
+          <option value="Computer Maintenance & IT Support">Matengenezo ya Kompyuta & IT Support - TZS 20,000</option>
+        </select>
+        <textarea id="details" rows="3" placeholder="Maelezo ya ziada" class="p-3 rounded-xl border col-span-2"></textarea>
+        <input type="file" id="file-upload" accept=".jpg,.png,.pdf,.docx" class="col-span-2">
+        <button type="submit" class="bg-green-700 text-white py-3 rounded-xl font-bold col-span-2"><i class="fas fa-paper-plane"></i> Tuma Ombi & WhatsApp</button>
+      </form>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="glass-card p-6 mb-8">
+      <h2 class="text-2xl font-bold mb-4">Njia za Malipo</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div><i class="fas fa-mobile-alt text-green-700"></i> <strong>VODA LIPA:</strong> 59183849</div>
+        <div><i class="fas fa-mobile-alt text-green-700"></i> <strong>TIGO LIPA:</strong> 45198490</div>
+        <div><i class="fas fa-mobile-alt text-green-700"></i> <strong>AIRTEL LIPA:</strong> 65525676</div>
+        <div><i class="fab fa-whatsapp text-green-700"></i> <strong>HALOPESA:</strong> +255625568661</div>
+      </div>
+      <p class="mt-4 text-gray-700">Mpokeaji: AMANI ERASMUCE HAULE</p>
+    </div>
+
+    <!-- Request History -->
+    <div class="glass-card p-6">
+      <h2 class="text-2xl font-bold mb-4">Historia ya Maombi Yako</h2>
+      <div id="history-list" class="space-y-3"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getDatabase, ref, get, set, push, remove, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
+    // ========== REPLACE WITH YOUR FIREBASE CONFIG ==========
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    // ======================================================
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+
+    let currentUser = null;
+    let userData = {};
+
+    function showToast(msg, isError = false) {
+      const toast = document.createElement('div');
+      toast.className = 'toast-3d';
+      toast.style.background = isError ? 'linear-gradient(135deg, #ef4444, #b91c1c)' : 'linear-gradient(135deg, #10b981, #047857)';
+      toast.innerText = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = 'index.html'; return; }
+      currentUser = user;
+      const userSnap = await get(ref(db, `users/${user.uid}`));
+      if (userSnap.exists()) userData = userSnap.val();
+      document.getElementById('user-name').innerText = userData.fullName || user.email;
+      document.getElementById('fullname').value = userData.fullName || '';
+      document.getElementById('email').value = user.email;
+      document.getElementById('phone').value = userData.phone || '';
+      document.getElementById('gender').value = userData.gender || 'Male';
+      loadHistory();
+    });
+
+    async function loadHistory() {
+      const reqRef = ref(db, `requests/${currentUser.uid}`);
+      const snapshot = await get(reqRef);
+      const container = document.getElementById('history-list');
+      container.innerHTML = '';
+      if (!snapshot.exists()) { container.innerHTML = '<p class="text-gray-500">Hakuna maombi bado.</p>'; return; }
+      const requests = snapshot.val();
+      Object.entries(requests).forEach(([id, req]) => {
+        const div = document.createElement('div');
+        div.className = 'bg-white p-4 rounded-xl shadow-sm flex justify-between items-center';
+        div.innerHTML = `
+          <div><strong>${req.service}</strong> - ${req.amount} TZS<br><span class="text-sm">Hali: ${req.status || 'Pending'}</span><br><span class="text-xs">${new Date(req.date).toLocaleString()}</span></div>
+          <button onclick="deleteRequest('${id}')" class="text-red-600"><i class="fas fa-trash"></i></button>
+        `;
+        container.appendChild(div);
+      });
+    }
+    window.deleteRequest = async (reqId) => {
+      await remove(ref(db, `requests/${currentUser.uid}/${reqId}`));
+      await remove(ref(db, `allRequests/${reqId}`));
+      showToast('Ombi limefutwa');
+      loadHistory();
+    };
+
+    document.getElementById('request-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value;
+      if (!/^\+255[0-9]{9}$/.test(phone)) { showToast('Nambari ya simu lazima iwe +255XXXXXXXXX', true); return; }
+      const serviceSelect = document.getElementById('service');
+      const service = serviceSelect.value;
+      if (!service) { showToast('Chagua huduma', true); return; }
+      let amount = '';
+      if (service === 'HESLB') amount = '10,000';
+      else if (service === 'RITA') amount = '10,000';
+      else if (service === 'NIDA') amount = '10,000';
+      else if (service === 'University Applications') amount = '5,000';
+      else if (service === 'Academic Work') amount = '500/page';
+      else if (service === 'Computer Maintenance & IT Support') amount = '20,000';
+      const details = document.getElementById('details').value;
+      const file = document.getElementById('file-upload').files[0];
+      let fileUrl = '';
+      if (file) {
+        const storagePath = storageRef(storage, `requests/${currentUser.uid}/${Date.now()}_${file.name}`);
+        const uploadTask = uploadBytesResumable(storagePath, file);
+        await uploadTask;
+        fileUrl = await getDownloadURL(storagePath);
+      }
+      const requestData = {
+        userId: currentUser.uid,
+        userName: userData.fullName,
+        email: currentUser.email,
+        phone,
+        gender: document.getElementById('gender').value,
+        service,
+        amount,
+        details,
+        fileUrl,
+        fileName: file ? file.name : '',
+        status: 'Pending',
+        date: Date.now()
+      };
+      const newReqRef = push(ref(db, `requests/${currentUser.uid}`));
+      await set(newReqRef, requestData);
+      await set(ref(db, `allRequests/${newReqRef.key}`), { ...requestData, requestId: newReqRef.key });
+      // WhatsApp message with file info
+      const msg = `📢 OMBI JIPYA 📢\n\n👤 Jina: ${userData.fullName}\n📧 Barua pepe: ${currentUser.email}\n📞 Simu: ${phone}\n🛠️ Huduma: ${service}\n💰 Kiasi: ${amount} TZS\n📝 Maelezo: ${details}\n📎 Faili: ${file ? file.name : 'Hakuna faili'}\n🔗 Kiungo: ${fileUrl || 'Hakuna'}`;
+      const whatsappUrl = `https://wa.me/255625568661?text=${encodeURIComponent(msg)}`;
+      window.open(whatsappUrl, '_blank');
+      showToast('Ombi limetumwa! WhatsApp itafunguka.');
+      document.getElementById('request-form').reset();
+      document.getElementById('file-upload').value = '';
+      loadHistory();
+    });
+
+    document.getElementById('logout-btn').onclick = () => { signOut(auth); window.location.href = 'index.html'; };
+  </script>
+</body>
+</html>
