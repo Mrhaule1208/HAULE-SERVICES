@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Mr. Haule Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      font-family: 'Times New Roman', Times, serif;
+    }
+    body {
+      background: #f0f9ff;
+    }
+    h1, h2, h3, .font-bold, .gradient-text {
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: 700;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #1e3c2c, #1e40af, #2563eb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .glass-card {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      border: 1px solid rgba(59,130,246,0.2);
+    }
+    .service-group {
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .service-group:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .service-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #1e40af;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    .sub-service-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .sub-service-item {
+      background: #eff6ff;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      color: #1e40af;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .sub-service-item:hover {
+      background: #dbeafe;
+    }
+    .sub-service-item.selected {
+      background: #2563eb;
+      color: white;
+      border-color: #1e40af;
+    }
+    .toast-3d {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      z-index: 2000;
+      animation: fadeUp 0.3s;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    /* Sidebar menu */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background: white;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 2rem 1rem;
+    }
+    .sidebar.open {
+      left: 0;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .overlay.active {
+      display: block;
+    }
+    .menu-item {
+      display: block;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+      transition: background 0.2s;
+    }
+    .menu-item:hover, .menu-item.active {
+      background: #eef2ff;
+      color: #2563eb;
+    }
+    .site-header {
+      text-align: center;
+      padding: 1rem 0 0.5rem;
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .nav-bar {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .menu-toggle {
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #2563eb;
+    }
+    /* Tab content */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="flex justify-center items-center gap-3">
+    <img src="logo.jpg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-blue-500" onerror="this.onerror=null; this.src='https://placehold.co/50x50/1e3c2c/white?text=MH';">
+    <span class="text-3xl md:text-4xl font-extrabold gradient-text">MR. HAULE SERVICES</span>
+  </div>
+</div>
+
+<div class="nav-bar sticky top-0 z-40 shadow-sm">
+  <div class="flex items-center gap-3">
+    <div class="menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </div>
+    <span class="text-blue-600 font-semibold">Dashboard</span>
+  </div>
+  <div class="flex gap-3">
+    <a id="admin-btn" href="admin.html" class="bg-purple-600 text-white px-5 py-2 rounded-full shadow-md hover:bg-purple-700 hidden"><i class="fas fa-crown"></i> Admin</a>
+    <button id="logout-btn" class="bg-red-600 text-white px-5 py-2 rounded-full shadow hover:bg-red-700"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</div>
+
+<!-- Sidebar Menu -->
+<div class="overlay" id="overlay"></div>
+<div class="sidebar" id="sidebar">
+  <div class="mb-8">
+    <h2 class="text-xl font-bold text-blue-800">Menu</h2>
+  </div>
+  <div class="menu-item" data-tab="profile">Edit Profile</div>
+  <div class="menu-item active" data-tab="service">Choose Service and Confirm</div>
+  <div class="menu-item" data-tab="payment">Njia za Malipo</div>
+</div>
+
+<div class="max-w-6xl mx-auto p-4">
+  <!-- Welcome header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold gradient-text">Welcome, <span id="user-name">User</span></h1>
+  </div>
+
+  <!-- Tab: Edit Profile -->
+  <div id="profile-tab" class="tab-content">
+    <div class="glass-card p-6 mb-8">
+      <h2 class="text-2xl font-bold mb-4 text-blue-800">Edit Your Profile</h2>
+      <form id="profile-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="profile-name" placeholder="Full Name" class="p-3 rounded-xl border border-blue-200" required>
+        <input type="email" id="profile-email" placeholder="Email" class="p-3 rounded-xl border border-blue-200" required>
+        <input type="tel" id="profile-phone" placeholder="+255XXXXXXXXX" class="p-3 rounded-xl border border-blue-200" required>
+        <select id="profile-gender" class="p-3 rounded-xl border border-blue-200">
+          <option>Male</option><option>Female</option><option>Other</option>
+        </select>
+        <button type="submit" class="bg-blue-600 text-white py-3 rounded-xl font-bold col-span-2 hover:bg-blue-700">Update Profile</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tab: Choose Service and Confirm -->
+  <div id="service-tab" class="tab-content active">
+    <div class="glass-card p-6 mb-8">
+      <h2 class="text-2xl font-bold mb-4 text-blue-800">Choose a Service</h2>
+
+      <!-- Service categories with sub‑options -->
+      <div id="service-list" class="space-y-4">
+        <!-- HESLB -->
+        <div class="service-group">
+          <div class="service-title">HESLB</div>
+          <div class="sub-service-list" data-category="HESLB">
+            <div class="sub-service-item" data-value="HESLB - Maombi ya Mkopo" data-price="10000">Maombi ya Mkopo</div>
+            <div class="sub-service-item" data-value="HESLB - Marekebisho ya Taarifa" data-price="10000">Marekebisho ya Taarifa</div>
+            <div class="sub-service-item" data-value="HESLB - Uhakiki wa Nyaraka" data-price="5000">Uhakiki wa Nyaraka</div>
+            <div class="sub-service-item" data-value="HESLB - Mwongozo wa Maombi" data-price="5000">Mwongozo wa Maombi</div>
+          </div>
+        </div>
+        <!-- RITA -->
+        <div class="service-group">
+          <div class="service-title">RITA</div>
+          <div class="sub-service-list" data-category="RITA">
+            <div class="sub-service-item" data-value="RITA - Vyeti vya Kuzaliwa/Kifo" data-price="10000">Vyeti vya Kuzaliwa/Kifo</div>
+            <div class="sub-service-item" data-value="RITA - Marekebisho ya Taarifa" data-price="8000">Marekebisho ya Taarifa</div>
+            <div class="sub-service-item" data-value="RITA - Ufuatiliaji wa Vyeti" data-price="5000">Ufuatiliaji wa Vyeti</div>
+          </div>
+        </div>
+        <!-- NIDA -->
+        <div class="service-group">
+          <div class="service-title">NIDA</div>
+          <div class="sub-service-list" data-category="NIDA">
+            <div class="sub-service-item" data-value="NIDA - Usajili" data-price="10000">Usajili</div>
+            <div class="sub-service-item" data-value="NIDA - Marekebisho ya Taarifa" data-price="8000">Marekebisho ya Taarifa</div>
+            <div class="sub-service-item" data-value="NIDA - Namba ya NIDA" data-price="5000">Namba ya NIDA</div>
+          </div>
+        </div>
+        <!-- University Applications -->
+        <div class="service-group">
+          <div class="service-title">University Applications</div>
+          <div class="sub-service-list" data-category="University Applications">
+            <div class="sub-service-item" data-value="University Applications - Maombi ya Udahili" data-price="10000">Maombi ya Udahili</div>
+            <div class="sub-service-item" data-value="University Applications - Uchaguzi wa Kozi" data-price="5000">Uchaguzi wa Kozi</div>
+            <div class="sub-service-item" data-value="University Applications - Mwongozo wa Vyuo" data-price="5000">Mwongozo wa Vyuo</div>
+          </div>
+        </div>
+        <!-- Academic Work -->
+        <div class="service-group">
+          <div class="service-title">Academic Work</div>
+          <div class="sub-service-list" data-category="Academic Work">
+            <div class="sub-service-item" data-value="Academic Work - Field Report" data-price="15000">Field Report</div>
+            <div class="sub-service-item" data-value="Academic Work - Assignments" data-price="500">Assignments (kwa ukurasa)</div>
+            <div class="sub-service-item" data-value="Academic Work - Research" data-price="20000">Research</div>
+            <div class="sub-service-item" data-value="Academic Work - Presentations" data-price="10000">Presentations</div>
+            <div class="sub-service-item" data-value="Academic Work - Barua Rasmi" data-price="5000">Barua Rasmi</div>
+          </div>
+        </div>
+        <!-- IT Support -->
+        <div class="service-group">
+          <div class="service-title">IT Support</div>
+          <div class="sub-service-list" data-category="IT Support">
+            <div class="sub-service-item" data-value="IT Support - Kupiga Windows" data-price="15000">Kupiga Windows</div>
+            <div class="sub-service-item" data-value="IT Support - Kuformat PC/Laptop" data-price="10000">Kuformat PC/Laptop</div>
+            <div class="sub-service-item" data-value="IT Support - Kuweka Antivirus na Kuondoa Virus" data-price="10000">Kuweka Antivirus na Kuondoa Virus</div>
+            <div class="sub-service-item" data-value="IT Support - Kurepair Files Zilizoharibika" data-price="8000">Kurepair Files Zilizoharibika</div>
+            <div class="sub-service-item" data-value="IT Support - Kuongeza Speed ya PC/Laptop" data-price="5000">Kuongeza Speed ya PC/Laptop</div>
+            <div class="sub-service-item" data-value="IT Support - Kuinstall Software Muhimu" data-price="5000">Kuinstall Software Muhimu</div>
+            <div class="sub-service-item" data-value="IT Support - Kurekebisha Errors za Mfumo" data-price="10000">Kurekebisha Errors za Mfumo</div>
+            <div class="sub-service-item" data-value="IT Support - Backup na Restore Mafaili" data-price="8000">Backup na Restore Mafaili</div>
+            <div class="sub-service-item" data-value="IT Support - Kusafisha PC na Kuboresha Performance" data-price="5000">Kusafisha PC na Kuboresha Performance</div>
+            <div class="sub-service-item" data-value="IT Support - Huduma Nyingine za IT" data-price="20000">Huduma Nyingine za IT</div>
+          </div>
+        </div>
+        <!-- TIN NUMBER -->
+        <div class="service-group">
+          <div class="service-title">TIN NUMBER</div>
+          <div class="sub-service-list" data-category="TIN NUMBER">
+            <div class="sub-service-item" data-value="TIN NUMBER - Usajili" data-price="15000">Usajili</div>
+            <div class="sub-service-item" data-value="TIN NUMBER - Marekebisho ya Taarifa" data-price="10000">Marekebisho ya Taarifa</div>
+          </div>
+        </div>
+        <!-- LOSS REPORT -->
+        <div class="service-group">
+          <div class="service-title">LOSS REPORT</div>
+          <div class="sub-service-list" data-category="LOSS REPORT">
+            <div class="sub-service-item" data-value="LOSS REPORT - Taarifa ya Hasara" data-price="20000">Taarifa ya Hasara</div>
+            <div class="sub-service-item" data-value="LOSS REPORT - Ufuatiliaji wa Taarifa" data-price="10000">Ufuatiliaji wa Taarifa</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selected service display -->
+      <div class="mt-6 p-4 bg-blue-50 rounded-xl">
+        <p class="font-semibold text-blue-800">Selected Service: <span id="selected-service-name">None</span></p>
+        <p class="text-sm text-gray-600 mt-1">Price: TZS <span id="selected-service-price">0</span></p>
+      </div>
+
+      <!-- Additional details -->
+      <div class="mt-6">
+        <label class="block text-gray-700 font-semibold mb-2">Additional Details (Optional)</label>
+        <textarea id="details" rows="3" placeholder="Maelezo ya ziada..." class="w-full p-3 rounded-xl border border-blue-200"></textarea>
+      </div>
+
+      <!-- WhatsApp Submit Button -->
+      <div class="mt-6">
+        <button id="submit-wa-btn" class="bg-green-600 hover:bg-green-700 text-white w-full py-3 rounded-xl font-bold transition">
+          <i class="fab fa-whatsapp mr-2"></i> Submit via WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Njia za Malipo -->
+  <div id="payment-tab" class="tab-content">
+    <div class="glass-card p-6">
+      <h2 class="text-2xl font-bold mb-4 text-blue-800">Njia za Malipo</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Vodacom -->
+        <div class="border border-blue-200 rounded-xl p-4 bg-white">
+          <div class="flex items-center gap-2 mb-3">
+            <i class="fas fa-mobile-alt text-blue-600 text-2xl"></i>
+            <h3 class="text-xl font-bold text-blue-800">Vodacom M-Pesa</h3>
+          </div>
+          <p class="text-gray-600 mb-1"><span class="font-semibold">Number:</span> 59183849</p>
+          <p class="text-gray-600 mb-3"><span class="font-semibold">Name:</span> AMANI ERASMUCE HAULE</p>
+          <button class="copy-number text-sm bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200" data-number="59183849">Copy Number</button>
+        </div>
+        <!-- Tigo -->
+        <div class="border border-blue-200 rounded-xl p-4 bg-white">
+          <div class="flex items-center gap-2 mb-3">
+            <i class="fas fa-mobile-alt text-blue-600 text-2xl"></i>
+            <h3 class="text-xl font-bold text-blue-800">Tigo Pesa</h3>
+          </div>
+          <p class="text-gray-600 mb-1"><span class="font-semibold">Number:</span> 45198490</p>
+          <p class="text-gray-600 mb-3"><span class="font-semibold">Name:</span> AMANI ERASMUCE HAULE</p>
+          <button class="copy-number text-sm bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200" data-number="45198490">Copy Number</button>
+        </div>
+        <!-- Airtel -->
+        <div class="border border-blue-200 rounded-xl p-4 bg-white">
+          <div class="flex items-center gap-2 mb-3">
+            <i class="fas fa-mobile-alt text-blue-600 text-2xl"></i>
+            <h3 class="text-xl font-bold text-blue-800">Airtel Money</h3>
+          </div>
+          <p class="text-gray-600 mb-1"><span class="font-semibold">Number:</span> 65525676</p>
+          <p class="text-gray-600 mb-3"><span class="font-semibold">Name:</span> AMANI ERASMUCE HAULE</p>
+          <button class="copy-number text-sm bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200" data-number="65525676">Copy Number</button>
+        </div>
+        <!-- Halopesa -->
+        <div class="border border-blue-200 rounded-xl p-4 bg-white">
+          <div class="flex items-center gap-2 mb-3">
+            <i class="fab fa-whatsapp text-blue-600 text-2xl"></i>
+            <h3 class="text-xl font-bold text-blue-800">HaloPesa</h3>
+          </div>
+          <p class="text-gray-600 mb-1"><span class="font-semibold">Number:</span> +255625568661</p>
+          <p class="text-gray-600 mb-3"><span class="font-semibold">Name:</span> AMANI ERASMUCE HAULE</p>
+          <button class="copy-number text-sm bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200" data-number="+255625568661">Copy Number</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getDatabase, ref, get, set, push, remove, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAOpjaV41QyCJGO_ptv_gmD_MYFWCcSA6k",
+    authDomain: "haule-81f1d.firebaseapp.com",
+    databaseURL: "https://haule-81f1d-default-rtdb.firebaseio.com",
+    projectId: "haule-81f1d",
+    storageBucket: "haule-81f1d.firebasestorage.app",
+    messagingSenderId: "612778536991",
+    appId: "1:612778536991:web:d6c6fb2495984de7fd652a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  let currentUser = null;
+  let userData = {};
+  let selectedService = null;
+  let selectedPrice = 0;
+
+  function showToast(msg, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-3d';
+    if (isError) toast.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
+    else toast.style.background = "linear-gradient(135deg, #2563eb, #1e40af)";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Sidebar logic
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuItems = document.querySelectorAll('.menu-item');
+  const tabs = document.querySelectorAll('.tab-content');
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  }
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+  }
+
+  menuToggle.addEventListener('click', openSidebar);
+  overlay.addEventListener('click', closeSidebar);
+
+  menuItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const tabId = item.getAttribute('data-tab');
+      // Update active class on menu
+      menuItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      // Show the corresponding tab
+      tabs.forEach(tab => tab.classList.remove('active'));
+      document.getElementById(`${tabId}-tab`).classList.add('active');
+      closeSidebar();
+    });
+  });
+
+  // Service selection
+  const serviceItems = document.querySelectorAll('.sub-service-item');
+  const selectedServiceNameSpan = document.getElementById('selected-service-name');
+  const selectedServicePriceSpan = document.getElementById('selected-service-price');
+
+  serviceItems.forEach(item => {
+    item.addEventListener('click', () => {
+      // Remove selected class from all
+      serviceItems.forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      selectedService = item.getAttribute('data-value');
+      selectedPrice = item.getAttribute('data-price');
+      selectedServiceNameSpan.innerText = selectedService;
+      selectedServicePriceSpan.innerText = selectedPrice;
+    });
+  });
+
+  // WhatsApp submit
+  const submitBtn = document.getElementById('submit-wa-btn');
+  submitBtn.addEventListener('click', async () => {
+    if (!selectedService) {
+      showToast('Please select a service', true);
+      return;
+    }
+    const phone = document.getElementById('profile-phone').value;
+    if (!phone) {
+      showToast('Please update your phone number in profile first', true);
+      return;
+    }
+    const details = document.getElementById('details').value;
+    const fullName = userData.fullName || currentUser.email;
+
+    const message = `📢 *OMBI JIPYA* 📢\n\n👤 *Jina:* ${fullName}\n📞 *Simu:* ${phone}\n🛠️ *Huduma:* ${selectedService}\n💰 *Kiasi:* ${selectedPrice} TZS\n📝 *Maelezo:* ${details || 'Hakuna'}`;
+    const whatsappUrl = `https://wa.me/255625568661?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+
+    // Save request to database (optional, but we keep history)
+    const requestData = {
+      userId: currentUser.uid,
+      userName: userData.fullName,
+      email: currentUser.email,
+      phone,
+      gender: document.getElementById('profile-gender')?.value || '',
+      service: selectedService,
+      amount: selectedPrice,
+      details: details,
+      status: 'Pending',
+      date: Date.now()
+    };
+    const newReqRef = push(ref(db, `requests/${currentUser.uid}`));
+    await set(newReqRef, requestData);
+    await set(ref(db, `allRequests/${newReqRef.key}`), { ...requestData, requestId: newReqRef.key });
+    showToast('Ombi limetumwa kwa WhatsApp na limehifadhiwa!');
+    // Clear selection
+    serviceItems.forEach(i => i.classList.remove('selected'));
+    selectedService = null;
+    selectedPrice = 0;
+    selectedServiceNameSpan.innerText = 'None';
+    selectedServicePriceSpan.innerText = '0';
+    document.getElementById('details').value = '';
+    loadHistory(); // refresh history if needed
+  });
+
+  // Load user profile and history
+  async function loadHistory() {
+    const reqRef = ref(db, `requests/${currentUser.uid}`);
+    const snapshot = await get(reqRef);
+    // We're not displaying history on this page, but we keep the function for future use.
+    // Could be added in a separate tab if desired.
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    currentUser = user;
+    const userSnap = await get(ref(db, `users/${user.uid}`));
+    if (userSnap.exists()) userData = userSnap.val();
+    document.getElementById('user-name').innerText = userData.fullName || user.email;
+    document.getElementById('profile-name').value = userData.fullName || '';
+    document.getElementById('profile-email').value = user.email;
+    document.getElementById('profile-phone').value = userData.phone || '';
+    document.getElementById('profile-gender').value = userData.gender || 'Male';
+
+    // Admin button visibility
+    const adminBtn = document.getElementById('admin-btn');
+    if (user.email === 'hamanierasmuce@gmail.com') {
+      adminBtn.classList.remove('hidden');
+    } else {
+      adminBtn.classList.add('hidden');
+    }
+    loadHistory();
+  });
+
+  // Profile update
+  document.getElementById('profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fullName = document.getElementById('profile-name').value;
+    const email = document.getElementById('profile-email').value;
+    const phone = document.getElementById('profile-phone').value;
+    const gender = document.getElementById('profile-gender').value;
+    if (!/^\+255[0-9]{9}$/.test(phone)) { showToast('Phone must be +255XXXXXXXXX', true); return; }
+    try {
+      await set(ref(db, `users/${currentUser.uid}`), { fullName, email, phone, gender, uid: currentUser.uid });
+      userData = { fullName, email, phone, gender };
+      showToast('Profile updated successfully!');
+      document.getElementById('user-name').innerText = fullName;
+    } catch (err) { showToast(err.message, true); }
+  });
+
+  // Copy number functionality
+  document.querySelectorAll('.copy-number').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const number = btn.getAttribute('data-number');
+      navigator.clipboard.writeText(number);
+      showToast(`Copied: ${number}`);
+    });
+  });
+
+  document.getElementById('logout-btn').onclick = () => { signOut(auth); window.location.href = 'index.html'; };
+</script>
+</body>
+</html>
+```
