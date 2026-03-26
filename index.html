@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr Haule Services | Smart Academic Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            overflow-x: hidden;
+            color: #fff;
+        }
+        /* 3D Modal Styles */
+        .modal-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease, box-shadow 0.3s ease;
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.5);
+        }
+        .modal-3d:hover {
+            transform: rotateX(2deg) rotateY(2deg) scale(1.02);
+            box-shadow: 0 30px 40px -15px rgba(0,0,0,0.6);
+        }
+        .modal-overlay {
+            backdrop-filter: blur(8px);
+        }
+        button, input {
+            transition: all 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <!-- Canvas for 3D Background -->
+    <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
+
+    <div class="relative z-10">
+        <div class="flex justify-between p-4 bg-black/60 backdrop-blur-md border-b border-blue-500/30">
+            <h1 class="font-bold text-2xl tracking-wide text-white">MR HAULE SERVICES</h1>
+            <div>
+                <button onclick="openModal('login')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">Login</button>
+                <button onclick="openModal('register')" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg ml-2 transition">Register</button>
+            </div>
+        </div>
+
+        <section class="h-screen flex flex-col justify-center items-center text-center px-4">
+            <h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Smart Academic Services</h1>
+            <p class="text-xl text-gray-300 mt-4">HESLB • NIDA • RITA • IT Support</p>
+        </section>
+    </div>
+
+    <!-- Login Modal (3D) -->
+    <div id="login" class="hidden fixed inset-0 bg-black/70 modal-overlay flex items-center justify-center z-20">
+        <div class="bg-gray-800 text-white p-6 rounded-2xl w-96 modal-3d">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">Login</h2>
+            <input id="login-email" placeholder="Email" class="border border-gray-600 bg-gray-700 text-white p-2 w-full mb-3 rounded-lg">
+            <input id="login-pass" type="password" placeholder="Password" class="border border-gray-600 bg-gray-700 text-white p-2 w-full mb-4 rounded-lg">
+            <button onclick="login()" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-2 rounded-lg transition">Login</button>
+            <p onclick="resetPassword()" class="text-blue-400 text-sm mt-3 cursor-pointer hover:underline text-center">Forgot Password?</p>
+            <p onclick="closeModal('login')" class="text-gray-400 text-sm mt-2 cursor-pointer hover:text-white text-center">Cancel</p>
+        </div>
+    </div>
+
+    <!-- Register Modal (3D) -->
+    <div id="register" class="hidden fixed inset-0 bg-black/70 modal-overlay flex items-center justify-center z-20">
+        <div class="bg-gray-800 text-white p-6 rounded-2xl w-96 modal-3d">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">Register</h2>
+            <input id="reg-email" placeholder="Email" class="border border-gray-600 bg-gray-700 text-white p-2 w-full mb-3 rounded-lg">
+            <input id="reg-pass" type="password" placeholder="Password" class="border border-gray-600 bg-gray-700 text-white p-2 w-full mb-4 rounded-lg">
+            <button onclick="register()" class="bg-green-600 hover:bg-green-700 text-white w-full py-2 rounded-lg transition">Register</button>
+            <p onclick="closeModal('register')" class="text-gray-400 text-sm mt-2 cursor-pointer hover:text-white text-center">Cancel</p>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js",
+                "firebase/database": "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "firebase/auth";
+        import { getDatabase, ref, set, get } from "firebase/database";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOpjaV41QyCJGO_ptv_gmD_MYFWCcSA6k",
+            authDomain: "haule-81f1d.firebaseapp.com",
+            databaseURL: "https://haule-81f1d-default-rtdb.firebaseio.com"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        window.openModal = (id) => document.getElementById(id).classList.remove("hidden");
+        window.closeModal = (id) => document.getElementById(id).classList.add("hidden");
+
+        window.register = async () => {
+            const email = document.getElementById("reg-email").value;
+            const password = document.getElementById("reg-pass").value;
+            try {
+                const userCred = await createUserWithEmailAndPassword(auth, email, password);
+                await set(ref(db, `users/${userCred.user.uid}`), { email, role: "user" });
+                alert("Registration successful! Please login.");
+                closeModal("register");
+            } catch (err) {
+                alert(err.message);
+            }
+        };
+
+        window.login = async () => {
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-pass").value;
+            try {
+                const userCred = await signInWithEmailAndPassword(auth, email, password);
+                const snap = await get(ref(db, `users/${userCred.user.uid}`));
+                const role = snap.val()?.role || "user";
+                if (role === "admin") location.href = "admin.html";
+                else location.href = "dashboard.html";
+            } catch (err) {
+                alert(err.message);
+            }
+        };
+
+        window.resetPassword = async () => {
+            const email = document.getElementById("login-email").value;
+            if (!email) return alert("Enter your email first");
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("Password reset email sent!");
+            } catch (err) {
+                alert(err.message);
+            }
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const snap = await get(ref(db, `users/${user.uid}`));
+                const role = snap.val()?.role || "user";
+                if (role === "admin") location.href = "admin.html";
+                else location.href = "dashboard.html";
+            }
+        });
+    </script>
+
+    <script>
+        // Three.js Particle Background
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg-canvas"), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.z = 30;
+
+        const geometry = new THREE.BufferGeometry();
+        const count = 1500;
+        const positions = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+            positions[i*3] = (Math.random() - 0.5) * 100;
+            positions[i*3+1] = (Math.random() - 0.5) * 60;
+            positions[i*3+2] = (Math.random() - 0.5) * 50 - 20;
+        }
+        geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ color: 0x3b82f6, size: 0.2 });
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.rotation.x += 0.0005;
+            particles.rotation.y += 0.001;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
