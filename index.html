@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr Haule Services</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+<style>
+#bg { position: fixed; top: 0; left: 0; z-index: -1; }
+</style>
+</head>
+
+<body class="text-white">
+
+<canvas id="bg"></canvas>
+
+<div class="flex justify-between p-4 bg-black/50 backdrop-blur">
+<h1 class="font-bold">MR HAULE SERVICES</h1>
+<div>
+<button onclick="openModal('login')" class="bg-white text-black px-3 py-1 rounded">Login</button>
+<button onclick="openModal('register')" class="bg-blue-500 px-3 py-1 rounded">Register</button>
+</div>
+</div>
+
+<section class="h-screen flex flex-col justify-center items-center text-center">
+<h1 class="text-4xl font-bold">Smart Academic Services</h1>
+<p>HESLB • NIDA • RITA • IT Support</p>
+</section>
+
+<!-- MODALS -->
+<div id="login" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center">
+<div class="bg-white text-black p-6 rounded w-80">
+<input id="login-email" placeholder="Email" class="border p-2 w-full mb-2">
+<input id="login-pass" type="password" class="border p-2 w-full mb-2">
+<button onclick="login()" class="bg-blue-600 text-white w-full py-2">Login</button>
+<p onclick="resetPassword()" class="text-blue-600 text-sm mt-2 cursor-pointer">Forgot Password?</p>
+</div>
+</div>
+
+<div id="register" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center">
+<div class="bg-white text-black p-6 rounded w-80">
+<input id="reg-email" placeholder="Email" class="border p-2 w-full mb-2">
+<input id="reg-pass" type="password" class="border p-2 w-full mb-2">
+<button onclick="register()" class="bg-green-600 text-white w-full py-2">Register</button>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+const app = initializeApp({
+apiKey:"AIzaSyAOpjaV41QyCJGO_ptv_gmD_MYFWCcSA6k",
+authDomain:"haule-81f1d.firebaseapp.com",
+databaseURL:"https://haule-81f1d-default-rtdb.firebaseio.com"
+});
+
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+window.openModal = id => document.getElementById(id).classList.remove("hidden");
+
+window.register = async ()=>{
+const user = await createUserWithEmailAndPassword(auth, regEmail.value, regPass.value);
+await set(ref(db,`users/${user.user.uid}`),{email:user.user.email,role:"user"});
+alert("Registered!");
+};
+
+window.login = async ()=>{
+const user = await signInWithEmailAndPassword(auth, loginEmail.value, loginPass.value);
+const snap = await get(ref(db,`users/${user.user.uid}`));
+if(snap.val().role==="admin"){location.href="admin.html";}else{location.href="dashboard.html";}
+};
+
+window.resetPassword = async ()=>{
+await sendPasswordResetEmail(auth, loginEmail.value);
+alert("Reset email sent!");
+};
+
+onAuthStateChanged(auth, async(user)=>{
+if(user){
+const snap = await get(ref(db,`users/${user.uid}`));
+if(snap.val().role==="admin"){location.href="admin.html";}else{location.href="dashboard.html";}
+}
+});
+</script>
+
+<script>
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
+const renderer=new THREE.WebGLRenderer({canvas:bg,alpha:true});
+renderer.setSize(innerWidth,innerHeight);
+camera.position.z=5;
+
+const cube=new THREE.Mesh(new THREE.BoxGeometry(),new THREE.MeshBasicMaterial({color:0x0077ff,wireframe:true}));
+scene.add(cube);
+
+function animate(){
+requestAnimationFrame(animate);
+cube.rotation.x+=0.01;
+cube.rotation.y+=0.01;
+renderer.render(scene,camera);
+}
+animate();
+</script>
+
+</body>
+</html>
