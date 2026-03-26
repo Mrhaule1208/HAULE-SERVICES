@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100 flex">
+
+<div class="w-64 bg-blue-900 text-white p-4 min-h-screen">
+<h2 class="text-xl font-bold mb-6">User Dashboard</h2>
+</div>
+
+<div class="flex-1 p-6">
+
+<h1 class="text-2xl font-bold mb-4">Services</h1>
+
+<div class="bg-white p-5 rounded shadow mb-6">
+
+<h2 class="font-bold mb-2">💳 Payment</h2>
+
+<p>VODA: 59183849</p>
+<p>TIGO: 45198490</p>
+<p>AIRTEL: 65525676</p>
+<p>HALOPESA: +255625568661</p>
+<p class="font-bold">AMANI ERASMUCE HAULE</p>
+
+<input id="payerName" placeholder="Jina" class="border p-2 w-full mt-2">
+<input id="payerPhone" placeholder="Simu" class="border p-2 w-full mt-2">
+<input id="paymentCode" placeholder="Transaction Code" class="border p-2 w-full mt-2">
+
+</div>
+
+<input type="file" id="file" class="mb-4">
+
+<div id="services"></div>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+<!-- AI CHAT -->
+<div class="fixed bottom-5 right-5 w-80 bg-white shadow-xl rounded-lg">
+<div class="bg-blue-600 text-white p-3">AI Assistant</div>
+<div id="chatMessages" class="h-60 overflow-y-auto p-3"></div>
+<div class="flex">
+<input id="chatInput" class="flex-1 p-2">
+<button onclick="sendMessage()" class="bg-blue-600 text-white px-3">Send</button>
+</div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAuth,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getDatabase,ref,push,set,get } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { getStorage,ref as sRef,uploadBytes,getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
+const app = initializeApp({
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_DOMAIN",
+databaseURL:"YOUR_DB"
+});
+
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+const services = ["HESLB","NIDA","RITA"];
+
+let user;
+
+onAuthStateChanged(auth,(u)=>{
+if(!u) location.href="index.html";
+user=u;
+load();
+});
+
+async function load(){
+
+services.forEach(s=>{
+const btn=document.createElement("button");
+btn.innerText=s;
+btn.className="bg-blue-500 text-white p-2 m-1";
+
+btn.onclick=async()=>{
+
+const file=file.files[0];
+let url="";
+
+if(file){
+const sr=sRef(storage,Date.now()+file.name);
+await uploadBytes(sr,file);
+url=await getDownloadURL(sr);
+}
+
+const code=paymentCode.value;
+
+await set(push(ref(db,`requests/${user.uid}`)),{
+service:s,
+file:url,
+paymentCode:code,
+payerName:payerName.value,
+payerPhone:payerPhone.value,
+paymentStatus:"Pending Verification",
+status:"Pending",
+date:Date.now()
+});
+
+alert("Request submitted");
+};
+
+services.appendChild(btn);
+});
+
+}
+
+</script>
+
+<script>
+
+async function sendMessage(){
+
+const msg = chatInput.value;
+
+addMsg("You",msg);
+
+const res = await fetch("http://localhost:3000/chat",{
+method:"POST",
+headers:{ "Content-Type":"application/json"},
+body:JSON.stringify({message:msg})
+});
+
+const data = await res.json();
+
+addMsg("AI",data.reply);
+
+chatInput.value="";
+
+}
+
+function addMsg(s,t){
+chatMessages.innerHTML+=`<p><b>${s}:</b> ${t}</p>`;
+}
+
+</script>
+
+</body>
+</html>

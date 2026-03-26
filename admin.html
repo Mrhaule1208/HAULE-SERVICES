@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex">
+
+<div class="w-64 bg-blue-900 text-white p-4 min-h-screen">
+<h2 class="text-xl font-bold">Admin Panel</h2>
+</div>
+
+<div class="flex-1 p-6">
+
+<h1 class="text-2xl font-bold mb-4">Requests</h1>
+
+<table class="w-full bg-white shadow rounded">
+<thead class="bg-blue-600 text-white">
+<tr>
+<th>Service</th>
+<th>Payment</th>
+<th>Code</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="table"></tbody>
+</table>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAuth,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getDatabase,ref,get,update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+const app = initializeApp({
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_DOMAIN",
+databaseURL:"YOUR_DB"
+});
+
+const auth=getAuth(app);
+const db=getDatabase(app);
+
+onAuthStateChanged(auth,async ()=>{
+
+const snap = await get(ref(db,"allRequests"));
+
+if(snap.exists()){
+
+Object.entries(snap.val()).forEach(([id,r])=>{
+
+table.innerHTML+=`
+<tr class="border-b">
+<td>${r.service}</td>
+<td>${r.paymentStatus}</td>
+<td>${r.paymentCode}</td>
+<td>${r.status}</td>
+<td>
+<button onclick="approve('${id}')" class="bg-green-500 text-white px-2 py-1 rounded">
+Approve
+</button>
+</td>
+</tr>
+`;
+
+});
+
+}
+
+});
+
+window.approve = async(id)=>{
+await update(ref(db,`allRequests/${id}`),{
+paymentStatus:"Paid",
+status:"Completed"
+});
+location.reload();
+};
+
+</script>
+</body>
+</html>
