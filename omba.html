@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuma Ombi | MR - HAULE SERVICES 26/27</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>MR <span class="blue">- HAULE</span> SERVICES <span class="year">26/27</span></h1>
+            </div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="huduma.html">Huduma Zetu</a>
+                <a href="omba.html">Tuma Ombi</a>
+                <a href="#" class="btn-login">Ingia</a>
+                <a href="#" class="btn-register">Jiandikishe</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="form-page">
+        <div class="container">
+            <h2>Tuma Ombi la Huduma</h2>
+            <p class="intro">Jaza maelezo yako hapa chini. Ombi litakwenda moja kwa moja kwenye WhatsApp ya Bw. Haule.</p>
+
+            <form id="serviceForm" onsubmit="sendToWhatsApp(event)">
+                <div class="form-group">
+                    <label>Jina Kamili *</label>
+                    <input type="text" id="fullName" required placeholder="Andika jina lako kamili">
+                </div>
+
+                <div class="form-group">
+                    <label>Namba ya WhatsApp *</label>
+                    <input type="tel" id="phone" required placeholder="K.m. 0625568661">
+                </div>
+
+                <div class="form-group">
+                    <label>Aina ya Huduma *</label>
+                    <select id="serviceType" required>
+                        <option value="">Chagua huduma...</option>
+                        <option value="HESLB">HESLB (Maombi Mapya, Marekebisho n.k.)</option>
+                        <option value="RITA">RITA (Vyeti vya Kuzaliwa, Kifo, Marekebisho)</option>
+                        <option value="NIDA">NIDA (Usajili au Marekebisho)</option>
+                        <option value="Vyuo">Maombi ya Vyuo na Udahili</option>
+                        <option value="Computer">Computer Maintenance & IT Support</option>
+                        <option value="TIN">TIN Number Application</option>
+                        <option value="Loss">Loss Report Application</option>
+                        <option value="Uandishi">Uandishi (Assignment, Research, Field Report n.k.)</option>
+                        <option value="Other">Huduma Nyingine</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Maelezo ya Ombi *</label>
+                    <textarea id="details" rows="6" required placeholder="Eleza kwa undani unachohitaji, tarehe, eneo, nyaraka ulizonazo n.k."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Eneo / Location</label>
+                    <input type="text" id="location" placeholder="Dar es Salaam, Manzese, Arusha n.k.">
+                </div>
+
+                <button type="submit" class="btn btn-whatsapp big-btn">
+                    <i class="fab fa-whatsapp"></i> TUMA OMBI KWA WHATSAPP
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p><strong>MR - HAULE SERVICES 26/27</strong> | Kituo cha Huduma za Kitaaluma na Kiteknolojia</p>
+            <p>Simu: +255 625 568 661 | +255 692 584 825 | +255 745 014 719 | +255 656 278 661</p>
+            <p>&copy; 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp -->
+    <a href="https://wa.me/255625568661" target="_blank" class="floating-wa">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>
