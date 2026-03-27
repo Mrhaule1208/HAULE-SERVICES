@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makala | MR. HAULE SERVICES 26/27</title>
+    <!-- Tailwind CSS + Font Awesome + Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark body {
+            background-color: #111827;
+            color: #f3f4f6;
+        }
+        .dark .bg-white {
+            background-color: #1f2937;
+        }
+        .dark .card {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-3d {
+            background: #1E3A8A;
+            color: white;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.2), 0 0 0 4px rgba(30,58,138,0.6);
+            transform: translateY(20px) rotateX(5deg);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .modal-overlay.active .modal-3d {
+            transform: translateY(0) rotateX(0);
+        }
+        .modal-3d i {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .modal-3d h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .modal-3d p {
+            margin-bottom: 24px;
+        }
+        .modal-3d button {
+            background: white;
+            color: #1E3A8A;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-3d button:hover {
+            background: #f0f0f0;
+            transform: scale(1.02);
+        }
+        .article-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1.5rem 0 0.75rem;
+        }
+        .article-content ul, .article-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="1000096560.jpg" alt="Logo" class="h-12 w-auto rounded-md shadow-sm">
+                <span class="text-xl font-bold text-[#1E3A8A] dark:text-white">MR. HAULE SERVICES <span class="text-[#F97316]">26/27</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="hover:text-[#06B6D4] transition">Nyumbani</a>
+                <a href="index.html#services" class="hover:text-[#06B6D4] transition">Huduma Zetu</a>
+                <a href="blog.html" class="text-[#F97316] font-semibold">Blog</a>
+                <a href="apply.html" class="hover:text-[#06B6D4] transition">Omba Huduma</a>
+                <a href="contact.html" class="hover:text-[#06B6D4] transition">Mawasiliano</a>
+                <a href="about.html" class="hover:text-[#06B6D4] transition">Kuhusu Sisi</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button id="darkModeToggle" class="text-gray-600 dark:text-gray-300 text-xl">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="apply.html" class="bg-[#F97316] text-white px-5 py-2 rounded-full hover:bg-[#ea6c0f] transition shadow-md">Omba Huduma</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Article Section -->
+    <section class="py-16 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6 max-w-4xl">
+            <div id="articleContent" class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 md:p-10">
+                <!-- Dynamic content will be inserted here -->
+                <div class="text-center py-12">
+                    <i class="fas fa-spinner fa-pulse text-3xl text-[#F97316]"></i>
+                    <p class="mt-4">Inapakia makala...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#1E3A8A] text-white py-12">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">MR. HAULE SERVICES 26/27</h3>
+                    <p class="text-blue-100">Huduma za kitaaluma na kiteknolojia kwa uaminifu na weledi.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Mawasiliano</h3>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 625 568 661</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 692 584 825</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 745 014 719</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 656 278 661</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="https://wa.me/255625568661" target="_blank" class="text-white hover:text-green-300"><i class="fab fa-whatsapp fa-lg"></i></a>
+                        <a href="https://www.facebook.com/share/1CJJE875gf/" target="_blank" class="text-white hover:text-blue-300"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="https://www.instagram.com/mr.haule1976?igsh=Ynk5d3dia2dobWVm" target="_blank" class="text-white hover:text-pink-300"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Kuhusu Sisi</h3>
+                    <p class="text-blue-100">Tunajitahidi kutoa huduma bora za kitaaluma na kiteknolojia kwa wateja wetu wote.</p>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-8 pt-6 text-center text-blue-200 text-sm">
+                &copy; 2025 MR. HAULE SERVICES 26/27. Haki zote zimehifadhiwa.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for notifications (optional) -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-3d">
+            <i class="fas fa-info-circle"></i>
+            <h3 id="modalTitle">Taarifa</h3>
+            <p id="modalMessage">...</p>
+            <button id="modalCloseButton">Sawa</button>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle
+        const darkToggle = document.getElementById('darkModeToggle');
+        darkToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const icon = darkToggle.querySelector('i');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Blog post data (matching links from blog.html)
+        const posts = {
+            'heslb-guide': {
+                title: 'Mwongozo Kamili wa Maombi ya Mkopo HESLB 2025/2026',
+                date: 'Januari 15, 2025',
+                category: 'HESLB',
+                image: 'https://images.pexels.com/photos/159823/pexels-photo-159823.jpeg?auto=compress&cs=tinysrgb&w=600',
+                content: `
+                    <p>Kila mwaka, Wanafunzi wengi wa vyuo vikuu na vyuo vya kati hukabiliana na changamoto ya kupata mkopo wa HESLB. Makala hii itakuelekeza hatua kwa hatua jinsi ya kufanikiwa katika maombi yako.</p>
+                    
+                    <h2>1. Jitayarishe Mapema</h2>
+                    <p>Hakikisha una nyaraka zote zinazohitajika kabla ya kufungua mfumo. Nyaraka hizo ni pamoja na:</p>
+                    <ul>
+                        <li>Cheti cha kuzaliwa (RITA)</li>
+                        <li>Vyeti vya kidato cha nne na sita (au vya awali kwa wanaoingia vyuo vya kati)</li>
+                        <li>Barua ya kujiunga chuo (kwa wanafunzi waliopo)</li>
+                        <li>Taarifa za kifamilia (kwa wale wanaotegemea mkopo wa wazazi)</li>
+                        <li>Namba ya NIDA</li>
+                    </ul>
+
+                    <h2>2. Jaza Fomu Kwa Makini</h2>
+                    <p>Ingia kwenye tovuti ya HESLB (olas.heslb.go.tz) na ujaze taarifa zako kwa usahihi. Angalia herufi za jina, tarehe za kuzaliwa, na namba za mawasiliano. Makosa kidogo yanaweza kusababisha kuchelewa au kukataliwa.</p>
+
+                    <h2>3. Hakiki na Wasilisha</h2>
+                    <p>Kabla ya kubofya "Submit", hakiki taarifa zote. Baada ya kuwasilisha, utapokea namba ya maombi (reference number) ambayo utaitumia kufuatilia ombi lako.</p>
+
+                    <h2>4. Fuatilia Ombi Lako</h2>
+                    <p>Mara kwa mara angalia mfumo kujua kama kuna maelekezo zaidi au kama ombi limeidhinishwa. Kama unakabiliwa na tatizo, wasiliana nasi kwa msaada.</p>
+                    
+                    <p><strong>Kumbuka:</strong> Tunatoa huduma za usaidizi wa maombi ya mkopo, marekebisho na uhakiki wa nyaraka. Wasiliana nasi kwa namba zilizopo kwenye footer.</p>
+                `
+            },
+            'rita-birth-cert': {
+                title: 'Hatua za Kupata Cheti cha Kuzaliwa (RITA) Haraka',
+                date: 'Januari 10, 2025',
+                category: 'RITA',
+                image: 'https://images.pexels.com/photos/3777622/pexels-photo-3777622.jpeg?auto=compress&cs=tinysrgb&w=600',
+                content: `
+                    <p>Cheti cha kuzaliwa ni hati muhimu kwa usajili wa NIDA, uandikishaji shule, na matumizi mengine. Makala hii inaelezea jinsi ya kukipata kwa urahisi kupitia mfumo wa RITA.</p>
+                    
+                    <h2>1. Nenda Kwenye Tovuti au Ofisi ya RITA</h2>
+                    <p>Unaweza kufanya maombi mtandaoni kupitia <strong>e-services.rita.go.tz</strong> au kwa kufika katika ofisi za RITA mkoani kwako.</p>
+                    
+                    <h2>2. Andaa Nyaraka</h2>
+                    <ul>
+                        <li>Kitambulisho cha mzazi (NIDA au pasipoti)</li>
+                        <li>Fomu ya kuzaliwa kutoka hospitali (ikiwa mtoto amezaliwa hivi karibuni)</li>
+                        <li>Namba ya simu inayotumika</li>
+                    </ul>
+                    
+                    <h2>3. Jaza Fomu na Lipa Ada</h2>
+                    <p>Ada ya cheti cha kuzaliwa ni TZS 2,000 kwa wale wanaolipa kupitia mfumo wa e-payment. Baada ya malipo, utachapisha fomu ya maombi.</p>
+                    
+                    <h2>4. Pokea Cheti</h2>
+                    <p>Baada ya siku 3-5 za kazi, cheti kitakuwa tayari. Unaweza kukichukua ofisini au kukipata kwa njia ya posta (kwa anwani uliyotoa).</p>
+                    
+                    <p><strong>Mwongozo:</strong> Tunakusaidia kufanya marekebisho kwenye cheti kama kuna makosa, pamoja na ufuatiliaji wa vyeti. Wasiliana nasi kwa usaidizi.</p>
+                `
+            },
+            'nida-registration': {
+                title: 'Jinsi ya Kufanya Usajili wa NIDA na Marekebisho',
+                date: 'Januari 5, 2025',
+                category: 'NIDA',
+                image: 'https://images.pexels.com/photos/3970330/pexels-photo-3970330.jpeg?auto=compress&cs=tinysrgb&w=600',
+                content: `
+                    <p>Kitambulisho cha NIDA kinahitajika kwa shughuli nyingi za kiserikali na kibenki. Hapa utajua hatua za kusajili au kusahihisha taarifa zako.</p>
+                    
+                    <h2>Usajili wa Kwanza</h2>
+                    <p>Nenda kwenye kituo cha usajili (Ward Executive Office) na uwasilishe:</p>
+                    <ul>
+                        <li>Cheti cha kuzaliwa</li>
+                        <li>Kitambulisho cha mzazi au mlezi (kwa walio chini ya umri)</li>
+                        <li>Picha za pasipoti (kwa wale wanaohitaji)</li>
+                    </ul>
+                    <p>Utachukuliwa alama za vidole na picha, kisha utapewa kadi baada ya siku 14-30.</p>
+                    
+                    <h2>Marekebisho ya Taarifa</h2>
+                    <p>Kama kuna makosa kwenye kitambulisho, wasiliana na ofisi ya NIDA au tumia mfumo wa e-services. Tunatoa huduma ya kukusaidia kufanya marekebisho na kupata namba ya NIDA kwa haraka.</p>
+                `
+            },
+            'pc-speed': {
+                title: 'Vidokezo 5 vya Kuongeza Speed ya Laptop Yako',
+                date: 'Desemba 28, 2024',
+                category: 'Computer Maintenance',
+                image: 'https://images.pexels.com/photos/207691/pexels-photo-207691.jpeg?auto=compress&cs=tinysrgb&w=600',
+                content: `
+                    <p>Laptop inapokuwa polepole inakatisha tamaa. Fuata vidokezo hivi kuirejesha kasi.</p>
+                    
+                    <h2>1. Safisha Diski na Programu Zisizohitajika</h2>
+                    <p>Ondoa programu ambazo hutumii. Tumia Disk Cleanup (kwenye Windows) au CleanMyMac (kwa Mac) kuondoa files za muda.</p>
+                    
+                    <h2>2. Ongeza RAM au Badilisha HDD kuwa SSD</h2>
+                    <p>SSD inaongeza kasi mara 5-10 kuliko HDD. RAM 4GB inatosha kwa matumizi ya kawaida, lakini 8GB au zaidi inaongeza ufanisi.</p>
+                    
+                    <h2>3. Punguza Programu Zinazoanza Wakati wa Kuwasha (Startup)</h2>
+                    <p>Fungua Task Manager (Ctrl+Shift+Esc) na uondoe programu zisizo za lazima kwenye tab ya Startup.</p>
+                    
+                    <h2>4. Sasisha Madereva na Mfumo wa Uendeshaji</h2>
+                    <p>Madereva ya zamani yanaweza kusababisha utendaji duni. Hakikisha Windows au macOS yako imesasishwa.</p>
+                    
+                    <h2>5. Tumia Antivirus Nyepesi na Fanya Scan Mara Kwa Mara</h2>
+                    <p>Virusi na malware hupunguza kasi ya kompyuta. Tunasaidia kuweka antivirus bora na kuondoa virusi.</p>
+                    
+                    <p><strong>Je, unahitaji msaada?</strong> Tunatoa huduma za kuongeza speed, kusafisha PC, na kufunga software muhimu. Wasiliana nasi.</p>
+                `
+            }
+        };
+
+        // Get post parameter from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('post');
+        const container = document.getElementById('articleContent');
+
+        function renderPost(postId) {
+            const post = posts[postId];
+            if (!post) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-exclamation-triangle text-4xl text-[#F97316]"></i>
+                        <h2 class="text-2xl font-bold mt-4">Makala Haipatikani</h2>
+                        <p class="text-gray-600 dark:text-gray-300 mt-2">Tafadhali rudi kwenye <a href="blog.html" class="text-[#F97316] hover:underline">orodha ya makala</a>.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div>
+                    <img src="${post.image}" alt="${post.title}" class="w-full h-64 md:h-96 object-cover rounded-xl mb-6">
+                    <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        <span><i class="far fa-calendar-alt mr-1"></i> ${post.date}</span>
+                        <span class="mx-2">•</span>
+                        <span><i class="fas fa-tag mr-1"></i> ${post.category}</span>
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-bold mb-6">${post.title}</h1>
+                    <div class="article-content">
+                        ${post.content}
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-gray-600 dark:text-gray-300">Je, unahitaji msaada zaidi? <a href="apply.html" class="text-[#F97316] font-semibold">Omba huduma</a> au <a href="contact.html" class="text-[#F97316] font-semibold">wasiliana nasi</a>.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Execute on load
+        renderPost(postId);
+    </script>
+</body>
+</html>
