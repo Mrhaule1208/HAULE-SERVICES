@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omba Huduma | MR. HAULE SERVICES 26/27</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* reuse styles from index or add minimal */
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f0f9ff; transition: background 0.3s; }
+        .dark body { background: #0f172a; }
+        .step { transition: all 0.3s; }
+        .step.hidden { display: none; }
+        .step.active { display: block; }
+        .service-category { border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+        .dark .service-category { border-color: #374151; }
+        .service-header { display: flex; align-items: center; padding: 12px 16px; cursor: pointer; background: #f9fafb; }
+        .dark .service-header { background: #1f2937; }
+        .service-header:hover { background: #e5e7eb; }
+        .dark .service-header:hover { background: #2d3748; }
+        .service-header input[type="radio"] { margin-right: 12px; accent-color: #F97316; }
+        .service-title { font-weight: 600; flex: 1; }
+        .subservices { padding: 12px 16px; background: white; border-top: 1px solid #e5e7eb; display: none; }
+        .dark .subservices { background: #111827; border-top-color: #374151; }
+        .service-category.selected .subservices { display: block; }
+        .subservice-option { display: flex; align-items: center; margin-bottom: 8px; }
+        .subservice-option input[type="radio"] { margin-right: 12px; accent-color: #F97316; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal.active { display: flex; }
+        .modal-3d {
+            background: #1E3A8A;
+            color: white;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.4), 0 0 0 4px rgba(30,58,138,0.6);
+        }
+        .btn-3d {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            box-shadow: 0 6px 0 #1e40af;
+            transition: all 0.1s;
+        }
+        .btn-3d:active { transform: translateY(3px); box-shadow: 0 3px 0 #1e40af; }
+    </style>
+</head>
+<body>
+    <!-- Same header as index (copy from index) -->
+    <div class="text-center pt-8 pb-2">
+        <div class="flex justify-center items-center space-x-3">
+            <img src="images/1000096560.jpg" alt="Logo" class="h-16 w-auto rounded-xl shadow-lg">
+            <span class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-blue-400 dark:from-blue-300 dark:to-blue-100">MR. HAULE SERVICES <span class="text-blue-600">26/27</span></span>
+        </div>
+    </div>
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-blue-200 dark:border-blue-800 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-center space-x-6 md:space-x-10">
+            <a href="index.html" class="font-semibold text-blue-700 dark:text-blue-300">Nyumbani</a>
+            <a href="index.html#services" class="font-semibold text-blue-700 dark:text-blue-300">Huduma Zetu</a>
+            <a href="blog.html" class="font-semibold text-blue-700 dark:text-blue-300">Blog</a>
+            <a href="apply.html" class="font-semibold text-blue-600">Omba Huduma</a>
+            <a href="contact.html" class="font-semibold text-blue-700 dark:text-blue-300">Mawasiliano</a>
+            <a href="about.html" class="font-semibold text-blue-700 dark:text-blue-300">Kuhusu Sisi</a>
+        </div>
+    </nav>
+
+    <section class="py-16 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-bold text-blue-800 dark:text-white">Omba Huduma</h1>
+                <p class="text-gray-600 dark:text-gray-300">Jaza fomu hapa. Tutawasiliana nawe kwa haraka.</p>
+            </div>
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 md:p-8">
+                <!-- Step Indicators -->
+                <div class="flex justify-between mb-8">
+                    <div class="step-indicator flex-1 text-center border-b-2 pb-2 border-blue-600 text-blue-600 font-semibold">Hatua 1: Taarifa</div>
+                    <div class="step-indicator flex-1 text-center border-b-2 pb-2 border-gray-300 dark:border-gray-600 text-gray-500">Hatua 2: Huduma</div>
+                    <div class="step-indicator flex-1 text-center border-b-2 pb-2 border-gray-300 dark:border-gray-600 text-gray-500">Hatua 3: Malipo</div>
+                </div>
+
+                <!-- Step 1 -->
+                <div id="step1" class="step active">
+                    <div class="space-y-4">
+                        <div><label class="block font-medium mb-1">Jina Kamili *</label><input type="text" id="fullname" class="w-full border rounded-lg p-2 dark:bg-gray-800"></div>
+                        <div><label class="block font-medium mb-1">Namba ya Simu *</label><input type="tel" id="phone" class="w-full border rounded-lg p-2 dark:bg-gray-800"></div>
+                    </div>
+                    <div class="mt-8 flex justify-end"><button id="nextStep1" class="bg-blue-600 text-white px-6 py-2 rounded-full">Endelea <i class="fas fa-arrow-right ml-1"></i></button></div>
+                </div>
+
+                <!-- Step 2: Service selection with subservices -->
+                <div id="step2" class="step hidden">
+                    <div id="serviceListContainer" class="space-y-3"></div>
+                    <div class="mt-8 flex justify-between">
+                        <button id="prevStep2" class="border px-6 py-2 rounded-full"><i class="fas fa-arrow-left mr-1"></i> Nyuma</button>
+                        <button id="nextStep2" class="bg-blue-600 text-white px-6 py-2 rounded-full">Endelea <i class="fas fa-arrow-right ml-1"></i></button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Payment -->
+                <div id="step3" class="step hidden">
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <h3 class="font-bold text-lg mb-2">💳 Jinsi ya Kulipa</h3>
+                        <ul class="space-y-1 text-sm">
+                            <li>📱 VODA LIPA: 59183849</li>
+                            <li>📱 TIGO LIPA: 45198490</li>
+                            <li>📱 AIRTEL LIPA: 65525676</li>
+                            <li>📱 HALOPESA: +255 625 568 661</li>
+                        </ul>
+                        <p class="mt-2 text-sm">Jina la mpokezi: <strong>AMANI ERASMUCE HAULE</strong></p>
+                    </div>
+                    <div class="flex items-start space-x-2 mb-4">
+                        <input type="checkbox" id="confirmPayment">
+                        <label>Nimekamilisha malipo (au nitafanya baada ya kuwasiliana)</label>
+                    </div>
+                    <div class="mt-8 flex justify-between">
+                        <button id="prevStep3" class="border px-6 py-2 rounded-full"><i class="fas fa-arrow-left mr-1"></i> Nyuma</button>
+                        <button id="submitRequest" class="bg-green-600 text-white px-6 py-2 rounded-full">Wasilisha Ombi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-blue-800 text-white py-8 text-center">
+        <p>&copy; 2025 MR. HAULE SERVICES 26/27</p>
+    </footer>
+
+    <div id="modalOverlay" class="modal"><div class="modal-3d"><i class="fas fa-info-circle text-4xl mb-2"></i><h3 id="modalTitle">Taarifa</h3><p id="modalMessage"></p><button id="modalCloseBtn" class="mt-4 bg-white text-blue-800 px-6 py-2 rounded-full">Sawa</button></div></div>
+
+    <script>
+        const BACKEND_URL = 'https://your-backend-url.onrender.com';
+        // Service data
+        const servicesData = [
+            { name: "HESLB", sub: ["Maombi ya Mkopo","Marekebisho ya taarifa","Uhakiki wa nyaraka","Mwongozo wa maombi"] },
+            { name: "RITA", sub: ["Vyeti vya Kuzaliwa","Vyeti vya Kifo","Marekebisho ya taarifa","Ufuatiliaji wa vyeti"] },
+            { name: "NIDA", sub: ["Usajili wa NIDA","Marekebisho ya taarifa","Mwongozo wa kupata Namba ya NIDA"] },
+            { name: "Maombi ya Vyuo", sub: ["Maombi ya udahili","Uchaguzi wa kozi","Mwongozo wa vyuo"] },
+            { name: "Huduma za Kitaaluma", sub: ["Field Report","Assignments","Research","Presentations","Barua rasmi"] },
+            { name: "Computer Maintenance", sub: ["Kupiga Windows","Kuformat PC","Antivirus","Kuongeza speed","Backup","Software installation"] }
+        ];
+
+        let selectedMain = null, selectedSub = null;
+
+        function renderServices() {
+            const container = document.getElementById('serviceListContainer');
+            container.innerHTML = '';
+            servicesData.forEach((svc, idx) => {
+                const div = document.createElement('div');
+                div.className = 'service-category';
+                div.setAttribute('data-service', svc.name);
+                const header = document.createElement('div');
+                header.className = 'service-header';
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'mainService';
+                radio.value = svc.name;
+                radio.onclick = () => {
+                    document.querySelectorAll('.service-category').forEach(c => c.classList.remove('selected'));
+                    div.classList.add('selected');
+                    selectedMain = svc.name;
+                    selectedSub = null;
+                };
+                const label = document.createElement('span');
+                label.className = 'service-title';
+                label.textContent = svc.name;
+                header.appendChild(radio);
+                header.appendChild(label);
+                div.appendChild(header);
+                const subDiv = document.createElement('div');
+                subDiv.className = 'subservices';
+                svc.sub.forEach(sub => {
+                    const opt = document.createElement('div');
+                    opt.className = 'subservice-option';
+                    const subRadio = document.createElement('input');
+                    subRadio.type = 'radio';
+                    subRadio.name = `sub_${svc.name}`;
+                    subRadio.value = sub;
+                    subRadio.onclick = () => { selectedSub = sub; };
+                    const subLabel = document.createElement('label');
+                    subLabel.textContent = sub;
+                    opt.appendChild(subRadio);
+                    opt.appendChild(subLabel);
+                    subDiv.appendChild(opt);
+                });
+                div.appendChild(subDiv);
+                container.appendChild(div);
+            });
+        }
+        renderServices();
+
+        // Step navigation
+        const step1 = document.getElementById('step1'), step2 = document.getElementById('step2'), step3 = document.getElementById('step3');
+        const next1 = document.getElementById('nextStep1'), next2 = document.getElementById('nextStep2'), prev2 = document.getElementById('prevStep2'), prev3 = document.getElementById('prevStep3');
+        const submitBtn = document.getElementById('submitRequest');
+        const indicators = document.querySelectorAll('.step-indicator');
+        function updateIndicators(step) {
+            indicators.forEach((ind, i) => {
+                if (i+1 === step) ind.classList.add('border-blue-600','text-blue-600'), ind.classList.remove('border-gray-300','text-gray-500');
+                else ind.classList.remove('border-blue-600','text-blue-600'), ind.classList.add('border-gray-300','text-gray-500');
+            });
+        }
+        next1.onclick = () => {
+            const name = document.getElementById('fullname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            if (!name || !phone) return showModal('Kosa','Jaza jina na namba ya simu.',true);
+            step1.classList.remove('active'); step1.classList.add('hidden');
+            step2.classList.remove('hidden'); step2.classList.add('active');
+            updateIndicators(2);
+        };
+        prev2.onclick = () => { step2.classList.remove('active'); step2.classList.add('hidden'); step1.classList.remove('hidden'); step1.classList.add('active'); updateIndicators(1); };
+        next2.onclick = () => {
+            if (!selectedMain) return showModal('Kosa','Chagua huduma kuu.',true);
+            if (!selectedSub) return showModal('Kosa','Chagua sub-service.',true);
+            step2.classList.remove('active'); step2.classList.add('hidden');
+            step3.classList.remove('hidden'); step3.classList.add('active');
+            updateIndicators(3);
+        };
+        prev3.onclick = () => { step3.classList.remove('active'); step3.classList.add('hidden'); step2.classList.remove('hidden'); step2.classList.add('active'); updateIndicators(2); };
+
+        submitBtn.onclick = async () => {
+            const confirm = document.getElementById('confirmPayment').checked;
+            if (!confirm) return showModal('Kosa','Thibitisha malipo.',true);
+            const fullname = document.getElementById('fullname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const data = { fullname, phone, mainService: selectedMain, subService: selectedSub };
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/request`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showModal('Imefanikiwa', result.message);
+                    // reset form
+                    document.getElementById('fullname').value = '';
+                    document.getElementById('phone').value = '';
+                    document.getElementById('confirmPayment').checked = false;
+                    selectedMain = null; selectedSub = null;
+                    document.querySelectorAll('.service-category').forEach(c => c.classList.remove('selected'));
+                    document.querySelectorAll('input[name="mainService"]').forEach(r => r.checked = false);
+                    document.querySelectorAll('input[type="radio"][name^="sub_"]').forEach(r => r.checked = false);
+                    step3.classList.remove('active'); step3.classList.add('hidden');
+                    step1.classList.remove('hidden'); step1.classList.add('active');
+                    updateIndicators(1);
+                } else {
+                    showModal('Hitilafu', result.message, true);
+                }
+            } catch (err) {
+                showModal('Hitilafu', 'Server haijibu. Jaribu tena.', true);
+            }
+        };
+
+        // Modal
+        const modal = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMsg = document.getElementById('modalMessage');
+        function showModal(title, msg, isError=false) {
+            modalTitle.textContent = title;
+            modalMsg.textContent = msg;
+            modal.classList.add('active');
+        }
+        document.getElementById('modalCloseBtn').onclick = () => modal.classList.remove('active');
+        modal.onclick = (e) => { if(e.target===modal) modal.classList.remove('active'); };
+    </script>
+</body>
+</html>
