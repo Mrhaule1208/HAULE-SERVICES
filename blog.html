@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | MR. HAULE SERVICES 26/27</title>
+    <!-- Tailwind CSS + Font Awesome + Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark body {
+            background-color: #111827;
+            color: #f3f4f6;
+        }
+        .dark .bg-white {
+            background-color: #1f2937;
+        }
+        .dark .card {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-3d {
+            background: #1E3A8A;
+            color: white;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.2), 0 0 0 4px rgba(30,58,138,0.6);
+            transform: translateY(20px) rotateX(5deg);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .modal-overlay.active .modal-3d {
+            transform: translateY(0) rotateX(0);
+        }
+        .modal-3d i {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .modal-3d h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .modal-3d p {
+            margin-bottom: 24px;
+        }
+        .modal-3d button {
+            background: white;
+            color: #1E3A8A;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-3d button:hover {
+            background: #f0f0f0;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Header (same as other pages) -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="1000096560.jpg" alt="Logo" class="h-12 w-auto rounded-md shadow-sm">
+                <span class="text-xl font-bold text-[#1E3A8A] dark:text-white">MR. HAULE SERVICES <span class="text-[#F97316]">26/27</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="hover:text-[#06B6D4] transition">Nyumbani</a>
+                <a href="index.html#services" class="hover:text-[#06B6D4] transition">Huduma Zetu</a>
+                <a href="blog.html" class="text-[#F97316] font-semibold">Blog</a>
+                <a href="apply.html" class="hover:text-[#06B6D4] transition">Omba Huduma</a>
+                <a href="contact.html" class="hover:text-[#06B6D4] transition">Mawasiliano</a>
+                <a href="about.html" class="hover:text-[#06B6D4] transition">Kuhusu Sisi</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button id="darkModeToggle" class="text-gray-600 dark:text-gray-300 text-xl">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="apply.html" class="bg-[#F97316] text-white px-5 py-2 rounded-full hover:bg-[#ea6c0f] transition shadow-md">Omba Huduma</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Hero -->
+    <section class="bg-gradient-to-r from-[#1E3A8A] to-[#06B6D4] text-white py-16">
+        <div class="container mx-auto px-4 md:px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold">Blog na Miongozo</h1>
+            <p class="text-xl mt-4 max-w-2xl mx-auto">Soma makala muhimu kuhusu HESLB, RITA, NIDA, Vyuo, na Teknolojia.</p>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <section class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Blog Posts Grid -->
+                <div class="lg:col-span-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Blog Post 1 -->
+                        <div class="card bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg">
+                            <img src="https://images.pexels.com/photos/159823/pexels-photo-159823.jpeg?auto=compress&cs=tinysrgb&w=600" alt="HESLB" class="w-full h-48 object-cover">
+                            <div class="p-5">
+                                <div class="text-sm text-[#F97316] mb-2"><i class="far fa-calendar-alt mr-1"></i> Januari 15, 2025</div>
+                                <h3 class="text-xl font-bold mb-2">Mwongozo Kamili wa Maombi ya Mkopo HESLB 2025/2026</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">Jinsi ya kujaza fomu, kuhakiki nyaraka, na kufanya marekebisho kwa urahisi.</p>
+                                <a href="blog-post.html?post=heslb-guide" class="text-[#F97316] font-semibold inline-flex items-center">Soma Zaidi <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                        <!-- Blog Post 2 -->
+                        <div class="card bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg">
+                            <img src="https://images.pexels.com/photos/3777622/pexels-photo-3777622.jpeg?auto=compress&cs=tinysrgb&w=600" alt="RITA" class="w-full h-48 object-cover">
+                            <div class="p-5">
+                                <div class="text-sm text-[#F97316] mb-2"><i class="far fa-calendar-alt mr-1"></i> Januari 10, 2025</div>
+                                <h3 class="text-xl font-bold mb-2">Hatua za Kupata Cheti cha Kuzaliwa (RITA) Haraka</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">Maelezo ya utaratibu, gharama na muda wa kupata cheti chako.</p>
+                                <a href="blog-post.html?post=rita-birth-cert" class="text-[#F97316] font-semibold inline-flex items-center">Soma Zaidi <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                        <!-- Blog Post 3 -->
+                        <div class="card bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg">
+                            <img src="https://images.pexels.com/photos/3970330/pexels-photo-3970330.jpeg?auto=compress&cs=tinysrgb&w=600" alt="NIDA" class="w-full h-48 object-cover">
+                            <div class="p-5">
+                                <div class="text-sm text-[#F97316] mb-2"><i class="far fa-calendar-alt mr-1"></i> Januari 5, 2025</div>
+                                <h3 class="text-xl font-bold mb-2">Jinsi ya Kufanya Usajili wa NIDA na Marekebisho</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">Mahitaji, vituo vya kusajili, na namna ya kusahihisha makosa kwenye kitambulisho.</p>
+                                <a href="blog-post.html?post=nida-registration" class="text-[#F97316] font-semibold inline-flex items-center">Soma Zaidi <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                        <!-- Blog Post 4 -->
+                        <div class="card bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg">
+                            <img src="https://images.pexels.com/photos/207691/pexels-photo-207691.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Computer Maintenance" class="w-full h-48 object-cover">
+                            <div class="p-5">
+                                <div class="text-sm text-[#F97316] mb-2"><i class="far fa-calendar-alt mr-1"></i> Desemba 28, 2024</div>
+                                <h3 class="text-xl font-bold mb-2">Vidokezo 5 vya Kuongeza Speed ya Laptop Yako</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">Jinsi ya kusafisha, kuondoa virusi, na kusanidi ili iendeshe haraka.</p>
+                                <a href="blog-post.html?post=pc-speed" class="text-[#F97316] font-semibold inline-flex items-center">Soma Zaidi <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Search (placeholder) -->
+                    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-5">
+                        <h3 class="text-xl font-bold mb-3">Tafuta Makala</h3>
+                        <div class="flex">
+                            <input type="text" placeholder="Neno muhimu..." class="flex-1 border border-gray-300 dark:border-gray-600 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F97316] dark:bg-gray-800">
+                            <button class="bg-[#1E3A8A] text-white px-4 rounded-r-lg hover:bg-blue-800"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-5">
+                        <h3 class="text-xl font-bold mb-3">Kategoria</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-700 dark:text-gray-300 hover:text-[#F97316]">HESLB (3)</a></li>
+                            <li><a href="#" class="text-gray-700 dark:text-gray-300 hover:text-[#F97316]">RITA (2)</a></li>
+                            <li><a href="#" class="text-gray-700 dark:text-gray-300 hover:text-[#F97316]">NIDA (2)</a></li>
+                            <li><a href="#" class="text-gray-700 dark:text-gray-300 hover:text-[#F97316]">Computer Maintenance (4)</a></li>
+                            <li><a href="#" class="text-gray-700 dark:text-gray-300 hover:text-[#F97316]">Maombi ya Vyuo (1)</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Recent Posts -->
+                    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-5">
+                        <h3 class="text-xl font-bold mb-3">Makala Hivi Karibuni</h3>
+                        <ul class="space-y-3">
+                            <li><a href="#" class="flex items-center space-x-3 hover:text-[#F97316]"><i class="fas fa-file-alt text-[#F97316]"></i><span>Mwongozo wa Mkopo HESLB</span></a></li>
+                            <li><a href="#" class="flex items-center space-x-3 hover:text-[#F97316]"><i class="fas fa-file-alt text-[#F97316]"></i><span>Kupata Cheti cha Kuzaliwa RITA</span></a></li>
+                            <li><a href="#" class="flex items-center space-x-3 hover:text-[#F97316]"><i class="fas fa-file-alt text-[#F97316]"></i><span>Kusajili NIDA</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#1E3A8A] text-white py-12">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">MR. HAULE SERVICES 26/27</h3>
+                    <p class="text-blue-100">Huduma za kitaaluma na kiteknolojia kwa uaminifu na weledi.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Mawasiliano</h3>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 625 568 661</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 692 584 825</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 745 014 719</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 656 278 661</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="https://wa.me/255625568661" target="_blank" class="text-white hover:text-green-300"><i class="fab fa-whatsapp fa-lg"></i></a>
+                        <a href="https://www.facebook.com/share/1CJJE875gf/" target="_blank" class="text-white hover:text-blue-300"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="https://www.instagram.com/mr.haule1976?igsh=Ynk5d3dia2dobWVm" target="_blank" class="text-white hover:text-pink-300"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Kuhusu Sisi</h3>
+                    <p class="text-blue-100">Tunajitahidi kutoa huduma bora za kitaaluma na kiteknolojia kwa wateja wetu wote.</p>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-8 pt-6 text-center text-blue-200 text-sm">
+                &copy; 2025 MR. HAULE SERVICES 26/27. Haki zote zimehifadhiwa.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal (not used much here but included) -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-3d">
+            <i class="fas fa-info-circle"></i>
+            <h3 id="modalTitle">Taarifa</h3>
+            <p id="modalMessage">...</p>
+            <button id="modalCloseButton">Sawa</button>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle
+        const darkToggle = document.getElementById('darkModeToggle');
+        darkToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const icon = darkToggle.querySelector('i');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Modal functions (just in case)
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalCloseBtn = document.getElementById('modalCloseButton');
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+        }
+    </script>
+</body>
+</html>

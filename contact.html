@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mawasiliano | MR. HAULE SERVICES 26/27</title>
+    <!-- Tailwind CSS + Font Awesome + Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark body {
+            background-color: #111827;
+            color: #f3f4f6;
+        }
+        .dark .bg-white {
+            background-color: #1f2937;
+        }
+        .dark .contact-card {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        .contact-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-3d {
+            background: #1E3A8A;
+            color: white;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.2), 0 0 0 4px rgba(30,58,138,0.6);
+            transform: translateY(20px) rotateX(5deg);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .modal-overlay.active .modal-3d {
+            transform: translateY(0) rotateX(0);
+        }
+        .modal-3d i {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .modal-3d h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .modal-3d p {
+            margin-bottom: 24px;
+        }
+        .modal-3d button {
+            background: white;
+            color: #1E3A8A;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-3d button:hover {
+            background: #f0f0f0;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Header (same as other pages) -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="1000096560.jpg" alt="Logo" class="h-12 w-auto rounded-md shadow-sm">
+                <span class="text-xl font-bold text-[#1E3A8A] dark:text-white">MR. HAULE SERVICES <span class="text-[#F97316]">26/27</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="hover:text-[#06B6D4] transition">Nyumbani</a>
+                <a href="index.html#services" class="hover:text-[#06B6D4] transition">Huduma Zetu</a>
+                <a href="#" class="hover:text-[#06B6D4] transition">Blog</a>
+                <a href="apply.html" class="hover:text-[#06B6D4] transition">Omba Huduma</a>
+                <a href="contact.html" class="text-[#F97316] font-semibold">Mawasiliano</a>
+                <a href="#" class="hover:text-[#06B6D4] transition">Kuhusu Sisi</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button id="darkModeToggle" class="text-gray-600 dark:text-gray-300 text-xl">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="apply.html" class="bg-[#F97316] text-white px-5 py-2 rounded-full hover:bg-[#ea6c0f] transition shadow-md">Omba Huduma</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contact Section -->
+    <section class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-[#1E3A8A] dark:text-white">Wasiliana Nasi</h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-2 max-w-2xl mx-auto">Tupo hapa kukusaidia. Wasiliana nasi kwa njia yoyote utakayoipenda.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Contact Info Cards -->
+                <div class="space-y-6">
+                    <div class="contact-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-[#1E3A8A] dark:text-[#06B6D4] text-xl">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Simu / WhatsApp</h3>
+                                <p class="text-gray-600 dark:text-gray-300">+255 625 568 661</p>
+                                <p class="text-gray-600 dark:text-gray-300">+255 692 584 825</p>
+                                <p class="text-gray-600 dark:text-gray-300">+255 745 014 719</p>
+                                <p class="text-gray-600 dark:text-gray-300">+255 656 278 661</p>
+                                <div class="flex space-x-3 mt-2">
+                                    <a href="https://wa.me/255625568661" target="_blank" class="text-green-600 hover:text-green-700"><i class="fab fa-whatsapp fa-lg"></i></a>
+                                    <a href="tel:+255625568661" class="text-blue-600 hover:text-blue-700"><i class="fas fa-phone-alt fa-lg"></i></a>
+                                    <a href="sms:+255625568661" class="text-gray-600 hover:text-gray-700"><i class="fas fa-envelope fa-lg"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-[#1E3A8A] dark:text-[#06B6D4] text-xl">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Barua Pepe</h3>
+                                <p class="text-gray-600 dark:text-gray-300">info@mrhaule.co.tz (mfano)</p>
+                                <p class="text-gray-600 dark:text-gray-300">support@mrhaule.co.tz</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-[#1E3A8A] dark:text-[#06B6D4] text-xl">
+                                <i class="fab fa-facebook"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Mitandao ya Kijamii</h3>
+                                <div class="flex space-x-4 mt-2">
+                                    <a href="https://www.facebook.com/share/1CJJE875gf/" target="_blank" class="text-blue-700 hover:text-blue-800"><i class="fab fa-facebook fa-2x"></i></a>
+                                    <a href="https://www.instagram.com/mr.haule1976?igsh=Ynk5d3dia2dobWVm" target="_blank" class="text-pink-600 hover:text-pink-700"><i class="fab fa-instagram fa-2x"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 md:p-8">
+                    <h2 class="text-2xl font-bold text-[#1E3A8A] dark:text-white mb-6">Tutumie Ujumbe</h2>
+                    <form id="contactForm" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Jina Kamili <span class="text-red-500">*</span></label>
+                            <input type="text" id="contactName" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F97316] dark:bg-gray-800" placeholder="Mfano: Amani Haule" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Barua Pepe</label>
+                            <input type="email" id="contactEmail" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F97316] dark:bg-gray-800" placeholder="mfano@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Namba ya Simu <span class="text-red-500">*</span></label>
+                            <input type="tel" id="contactPhone" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F97316] dark:bg-gray-800" placeholder="Mfano: 0625568661" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Ujumbe <span class="text-red-500">*</span></label>
+                            <textarea id="contactMessage" rows="5" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F97316] dark:bg-gray-800" placeholder="Andika ujumbe wako hapa..." required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-[#F97316] text-white py-3 rounded-full hover:bg-orange-600 transition font-semibold">Tuma Ujumbe</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Map Placeholder -->
+            <div class="mt-16 bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-4">
+                <h2 class="text-2xl font-bold text-[#1E3A8A] dark:text-white mb-4 text-center">Mahali Tulipo</h2>
+                <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.672736648393!2d39.26540861470372!3d-6.822310195044136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x185c4c6f6b5c7b6f%3A0x7e9a8a6f0a0c0c0!2sDar%20es%20Salaam%2C%20Tanzania!5e0!3m2!1sen!2s!4v1650000000000!5m2!1sen!2s" 
+                        width="100%" 
+                        height="350" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        title="Ramani ya ofisi">
+                    </iframe>
+                    <p class="text-center text-gray-500 dark:text-gray-400 text-sm py-2">Tunapatikana Dar es Salaam, Tanzania. Wasiliana nasi kwa maelezo zaidi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (same as other pages) -->
+    <footer class="bg-[#1E3A8A] text-white py-12">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">MR. HAULE SERVICES 26/27</h3>
+                    <p class="text-blue-100">Huduma za kitaaluma na kiteknolojia kwa uaminifu na weledi.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Mawasiliano</h3>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 625 568 661</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 692 584 825</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 745 014 719</p>
+                    <p><i class="fas fa-phone-alt mr-2"></i> +255 656 278 661</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="https://wa.me/255625568661" target="_blank" class="text-white hover:text-green-300"><i class="fab fa-whatsapp fa-lg"></i></a>
+                        <a href="https://www.facebook.com/share/1CJJE875gf/" target="_blank" class="text-white hover:text-blue-300"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="https://www.instagram.com/mr.haule1976?igsh=Ynk5d3dia2dobWVm" target="_blank" class="text-white hover:text-pink-300"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Kuhusu Sisi</h3>
+                    <p class="text-blue-100">Tunajitahidi kutoa huduma bora za kitaaluma na kiteknolojia kwa wateja wetu wote.</p>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-8 pt-6 text-center text-blue-200 text-sm">
+                &copy; 2025 MR. HAULE SERVICES 26/27. Haki zote zimehifadhiwa.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for notifications -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-3d">
+            <i class="fas fa-info-circle"></i>
+            <h3 id="modalTitle">Taarifa</h3>
+            <p id="modalMessage">...</p>
+            <button id="modalCloseButton">Sawa</button>
+        </div>
+    </div>
+
+    <script>
+        // Modal functions
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalClose = document.getElementById('modalCloseButton');
+        function showModal(title, message, isError = false) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            const icon = modalOverlay.querySelector('.modal-3d i');
+            icon.className = isError ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+            modalOverlay.classList.add('active');
+        }
+        modalClose.addEventListener('click', () => modalOverlay.classList.remove('active'));
+        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+
+        // Dark mode toggle
+        const darkToggle = document.getElementById('darkModeToggle');
+        darkToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const icon = darkToggle.querySelector('i');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Handle contact form submission
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+            const message = document.getElementById('contactMessage').value.trim();
+
+            if (!name || !phone || !message) {
+                showModal('Kosa', 'Tafadhali jaza sehemu zote zenye nyota (*).', true);
+                return;
+            }
+
+            // Save to localStorage (for now)
+            const contactMessages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+            contactMessages.push({
+                name,
+                email,
+                phone,
+                message,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('contactMessages', JSON.stringify(contactMessages));
+
+            showModal('Ujumbe Umetumwa', 'Asante kwa kuwasiliana nasi. Tutajibu haraka iwezekanavyo.');
+            contactForm.reset();
+        });
+    </script>
+</body>
+</html>
