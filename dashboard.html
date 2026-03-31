@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Dashboard - Kituo cha Huduma za Kitaaluma na Kiteknolojia</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="Logo ya Kituo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Nyumbani</a></li>
+                    <li><a href="services.html">Huduma</a></li>
+                    <li><a href="order.html">Agiza</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <div data-netlify-identity-menu></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Dashboard Yako</h1>
+                <p>Karibu, <span id="user-email"></span>!</p>
+            </div>
+        </section>
+
+        <section class="dashboard-content">
+            <div class="container">
+                <div class="dashboard-card">
+                    <h2>Historia ya Maagizo</h2>
+                    <p>Hapa utaona maagizo yako uliyowasilisha.</p>
+                    <div id="orders-list">
+                        <p>Hakuna maagizo bado. <a href="services.html">Agiza huduma</a> sasa.</p>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h2>Taarifa za Akaunti</h2>
+                    <p><strong>Barua pepe:</strong> <span id="user-email-detail"></span></p>
+                    <button id="logout-btn" class="btn-small" style="background:#dc3545; color:white;">Toka (Logout)</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Kituo cha Huduma za Kitaaluma na Kiteknolojia</h3>
+                    <p>Huduma bora kwa wateja wetu wote.</p>
+                </div>
+                <div class="footer-contact">
+                    <h3>Wasiliana Nasi</h3>
+                    <p>📞 +255 625 568 661</p>
+                    <p>📞 +255 692 584 825</p>
+                    <p>📞 +255 745 014 719</p>
+                    <p>📞 +255 656 278 661</p>
+                    <p>📧 huduma@kituochahuduma.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Kituo cha Huduma za Kitaaluma na Kiteknolojia. Haki zote zimehifadhiwa.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const netlifyIdentity = window.netlifyIdentity;
+        let currentUser = null;
+        if (netlifyIdentity) {
+            currentUser = netlifyIdentity.currentUser();
+        }
+
+        if (!currentUser) {
+            // Kama hajaingia, elekeza kwenye nyumbani au fungua widget
+            window.location.href = '/index.html';
+        } else {
+            document.getElementById('user-email').innerText = currentUser.email;
+            document.getElementById('user-email-detail').innerText = currentUser.email;
+        }
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            if (netlifyIdentity) {
+                netlifyIdentity.logout();
+                netlifyIdentity.on('logout', () => {
+                    window.location.href = '/index.html';
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .dashboard-content {
+            padding: 2rem 0;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .dashboard-card h2 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #ffc107;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</body>
+</html>
