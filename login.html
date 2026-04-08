@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ingia - MR. HAULE ORGANIZATION</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<canvas id="particles-bg"></canvas>
+
+<header class="header">
+    <div class="header-content">
+        <div class="logo">
+            <img src="images/logo.png" alt="Logo" id="logoImg" onerror="this.src='https://via.placeholder.com/60x60?text=HA'">
+            <h1>MR. HAULE <span style="color:#00ffff;">ORGANIZATION</span></h1>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" data-key="home">Nyumbani</a>
+            <a href="login.html" data-key="login">Ingia</a>
+            <a href="register.html" data-key="register">Jisajili</a>
+        </nav>
+        <div class="lang-switch">
+            <button class="lang-btn active" data-lang="sw">SW</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="glass-container" style="max-width: 450px;">
+        <div style="text-align: center;">
+            <i class="fas fa-user-circle" style="font-size: 4rem; color: #00ffff; margin-bottom: 15px;"></i>
+            <h2 style="margin-bottom: 10px;" data-key="welcomeBack">Welcome Back!</h2>
+            <p style="margin-bottom: 30px; color: rgba(255,255,255,0.7);" data-key="signInMsg">Sign in to continue to your account</p>
+        </div>
+
+        <form id="loginForm">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px;" data-key="emailLabel">Barua pepe (Email)</label>
+                <input type="email" id="loginEmail" placeholder="hamanierasmuce@gmail.com" required 
+                       style="width: 100%; padding: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; color: #fff;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px;" data-key="passwordLabel">Nenosiri</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required
+                       style="width: 100%; padding: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; color: #fff;">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <label style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="rememberMe"> <span data-key="rememberMe">Remember me</span>
+                </label>
+                <a href="reset-password.html" style="color: #00ffff; text-decoration: none;" data-key="forgotPassword">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;" data-key="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> Ingia
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 25px;">
+            <span data-key="noAccount">Don't have an account?</span>
+            <a href="register.html" style="color: #00ffff; text-decoration: none;" data-key="signupNow"> Signup now</a>
+        </p>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="copyright">
+        &copy; 2026 MR. HAULE ORGANIZATION. All Rights Reserved.
+    </div>
+</footer>
+
+<script src="firebase-config.js"></script>
+<script>
+    // Handle login
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
+
+        if(!email || !password) {
+            showToast('Tafadhali jaza barua pepe na nenosiri', 'error');
+            return;
+        }
+
+        // Show loading
+        const btn = document.querySelector('#loginForm button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inaingiza...';
+        btn.disabled = true;
+
+        try {
+            const auth = window.firebase.auth;
+            const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+            const database = window.firebase.database;
+            const { ref, get } = window.firebase;
+            
+            // Sign in user
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            // Get user data from Realtime Database
+            const userSnapshot = await get(ref(database, `users/${user.uid}`));
+            const userData = userSnapshot.val();
+            
+            // Save to localStorage if remember me is checked
+            if(rememberMe) {
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userName', userData?.fullName || email);
+                localStorage.setItem('userRole', userData?.role || 'user');
+            } else {
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('userLoggedIn', 'true');
+                sessionStorage.setItem('userName', userData?.fullName || email);
+                sessionStorage.setItem('userRole', userData?.role || 'user');
+            }
+            
+            showToast('✅ Kuingia kumefanikiwa! Unaelekezwa...');
+            
+            // Check if admin (using specific email)
+            if(email === 'hamanierasmuce@gmail.com') {
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else {
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+            
+        } catch (error) {
+            console.error(error);
+            let errorMessage = 'Kuingia kumeshindikana. Jaribu tena.';
+            if(error.code === 'auth/user-not-found') {
+                errorMessage = 'Hakuna akaunti iliyopatikana kwa barua pepe hii!';
+            } else if(error.code === 'auth/wrong-password') {
+                errorMessage = 'Nenosiri sio sahihi! Jaribu tena.';
+            } else if(error.code === 'auth/invalid-email') {
+                errorMessage = 'Barua pepe sio sahihi!';
+            } else if(error.code === 'auth/too-many-requests') {
+                errorMessage = 'Majaribio mengi sana. Jaribu baadaye.';
+            }
+            showToast(errorMessage, 'error');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    });
+
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Check if user is already logged in
+    window.addEventListener('DOMContentLoaded', () => {
+        const isLoggedIn = localStorage.getItem('userLoggedIn') || sessionStorage.getItem('userLoggedIn');
+        if(isLoggedIn === 'true') {
+            const userName = localStorage.getItem('userName') || sessionStorage.getItem('userName');
+            showToast(`👋 Karibu tena, ${userName || 'user'}!`);
+        }
+        
+        // Auto-fill remembered email
+        const rememberedEmail = localStorage.getItem('userEmail');
+        if(rememberedEmail) {
+            document.getElementById('loginEmail').value = rememberedEmail;
+            document.getElementById('rememberMe').checked = true;
+        }
+    });
+
+    // Language translations
+    const translations = {
+        sw: {
+            home: 'Nyumbani', login: 'Ingia', register: 'Jisajili',
+            welcomeBack: 'Karibu Tena!', signInMsg: 'Ingia ili kuendelea kwenye akaunti yako',
+            emailLabel: 'Barua pepe (Email)', passwordLabel: 'Nenosiri',
+            rememberMe: 'Nikumbuke', forgotPassword: 'Umesahau nenosiri?',
+            loginBtn: 'Ingia', noAccount: 'Huna akaunti?', signupNow: 'Jisajili sasa'
+        },
+        en: {
+            home: 'Home', login: 'Login', register: 'Register',
+            welcomeBack: 'Welcome Back!', signInMsg: 'Sign in to continue to your account',
+            emailLabel: 'Email Address', passwordLabel: 'Password',
+            rememberMe: 'Remember me', forgotPassword: 'Forgot password?',
+            loginBtn: 'Login', noAccount: "Don't have an account?", signupNow: 'Signup now'
+        }
+    };
+
+    let currentLang = 'sw';
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentLang = btn.dataset.lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.dataset.key;
+                if(translations[currentLang][key]) el.textContent = translations[currentLang][key];
+            });
+        });
+    });
+
+    // Particle background
+    const canvas = document.getElementById('particles-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let particles = [];
+    for(let i = 0; i < 50; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 3 + 1,
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: (Math.random() - 0.5) * 0.5
+        });
+    }
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
+        particles.forEach(p => {
+            p.x += p.speedX;
+            p.y += p.speedY;
+            if(p.x < 0) p.x = canvas.width;
+            if(p.x > canvas.width) p.x = 0;
+            if(p.y < 0) p.y = canvas.height;
+            if(p.y > canvas.height) p.y = 0;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    // Progress bar
+    window.addEventListener('scroll', () => {
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById('progressBar').style.width = scrolled + '%';
+    });
+</script>
+</body>
+</html>
