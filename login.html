@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingia - MR. HAULE ORGANIZATION</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div class="wave-overlay"></div>
+<div class="particles" id="particles"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="header">
+    <div class="header-content">
+        <div class="logo"><div class="logo-img">HA</div><h1>MR. HAULE ORGANIZATION</h1></div>
+        <nav class="nav-menu">
+            <a href="index.html">Nyumbani</a>
+            <a href="login.html">Ingia</a>
+            <a href="register.html">Jisajili</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="glass-container" style="max-width: 450px;">
+        <div style="text-align:center;"><i class="fas fa-user-circle" style="font-size:4rem;"></i><h2>Karibu Tena!</h2><p>Ingia ili kuendelea</p></div>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Barua pepe" required>
+            <input type="password" id="password" placeholder="Nenosiri" required>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Ingia</button>
+        </form>
+        <p style="text-align:center; margin-top:20px;"><a href="register.html" style="color:#fff;">Huna akaunti? Jisajili</a> | <a href="reset-password.html" style="color:#fff;">Umesahau nenosiri?</a></p>
+    </div>
+</main>
+
+<script src="firebase-config.js"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const btn = e.target.querySelector('button');
+        btn.innerHTML = 'Inaingiza...';
+        btn.disabled = true;
+        try {
+            await firebase.auth().signInWithEmailAndPassword(email, password);
+            alert('Kuingia kumefanikiwa!');
+            window.location.href = 'dashboard.html';
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            btn.innerHTML = 'Ingia';
+            btn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>

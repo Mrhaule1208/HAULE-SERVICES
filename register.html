@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jisajili - MR. HAULE ORGANIZATION</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div class="wave-overlay"></div>
+<div class="particles" id="particles"></div>
+
+<header class="header">
+    <div class="header-content">
+        <div class="logo"><div class="logo-img">HA</div><h1>MR. HAULE ORGANIZATION</h1></div>
+        <nav class="nav-menu">
+            <a href="index.html">Nyumbani</a>
+            <a href="login.html">Ingia</a>
+            <a href="register.html">Jisajili</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="glass-container" style="max-width: 500px;">
+        <h2 style="text-align:center;">📝 Jisajili Sasa</h2>
+        <form id="registerForm">
+            <input type="text" id="fullName" placeholder="Jina Kamili" required>
+            <input type="email" id="email" placeholder="Barua pepe" required>
+            <input type="tel" id="phone" placeholder="Namba ya simu">
+            <select id="gender"><option value="">Chagua Jinsia</option><option value="Male">Mwanaume</option><option value="Female">Mwanamke</option></select>
+            <input type="password" id="password" placeholder="Nenosiri (herufi 6+)" required>
+            <input type="password" id="confirmPassword" placeholder="Thibitisha Nenosiri" required>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Jisajili</button>
+        </form>
+        <p style="text-align:center; margin-top:20px;"><a href="login.html" style="color:#fff;">Tayari una akaunti? Ingia</a></p>
+    </div>
+</main>
+
+<script src="firebase-config.js"></script>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        const fullName = document.getElementById('fullName').value;
+        const phone = document.getElementById('phone').value;
+        const gender = document.getElementById('gender').value;
+
+        if (password !== confirm) {
+            alert('Nenosiri hazilingani!');
+            return;
+        }
+        if (password.length < 6) {
+            alert('Nenosiri lazima iwe na herufi 6 au zaidi');
+            return;
+        }
+
+        const btn = e.target.querySelector('button');
+        btn.innerHTML = 'Inasajili...';
+        btn.disabled = true;
+        try {
+            const userCred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+            const uid = userCred.user.uid;
+            await firebase.database().ref('users/' + uid).set({
+                fullName: fullName,
+                email: email,
+                phone: phone,
+                gender: gender,
+                role: 'user',
+                createdAt: new Date().toISOString()
+            });
+            alert('Usajili umefanikiwa! Tafadhali ingia.');
+            window.location.href = 'login.html';
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            btn.innerHTML = 'Jisajili';
+            btn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>

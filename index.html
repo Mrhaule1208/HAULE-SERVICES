@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>MR. HAULE ORGANIZATION | Huduma za Kitaaluma na Kiteknolojia</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="wave-overlay"></div>
+<div class="particles" id="particles"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="header">
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-img">HA</div>
+            <h1>MR. HAULE <span style="color:#fff;">ORGANIZATION</span></h1>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" data-key="home">Nyumbani</a>
+            <a href="#" onclick="showServicesOnly()" data-key="services">Huduma</a>
+            <a href="login.html" data-key="login">Ingia</a>
+            <a href="register.html" data-key="register">Jisajili</a>
+            <a href="dashboard.html" data-key="dashboard">Dashboard</a>
+        </nav>
+        <div class="lang-switch">
+            <button class="lang-btn active" data-lang="sw" onclick="setLanguage('sw')">SW</button>
+            <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+        </div>
+    </div>
+</header>
+
+<main id="mainContent">
+    <!-- Home content loaded dynamically -->
+</main>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div>
+            <h3>MR. HAULE ORGANIZATION</h3>
+            <p data-key="footerDesc">Kituo cha Huduma za Kitaaluma na Kiteknolojia</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/share/14ZwQ36i7dc/" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/mr.haule_/" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/255625568661" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="contact-info">
+            <h3 data-key="contact">Wasiliana Nasi</h3>
+            <p><i class="fas fa-phone"></i> +255 625 568 661</p>
+            <p><i class="fas fa-phone"></i> +255 692 584 825</p>
+            <p><i class="fas fa-envelope"></i> hamanierasmuce@gmail.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Ubungo Maji, Dar es Salaam</p>
+        </div>
+        <div>
+            <h3 data-key="workingHours">Saa za Kufungua</h3>
+            <p>Jumatatu - Ijumaa: 8:00 - 18:00</p>
+            <p>Jumamosi: 9:00 - 15:00</p>
+            <p>Jumapili: Kwa Appointment</p>
+        </div>
+    </div>
+    <div class="copyright">
+        &copy; 2026 MR. HAULE ORGANIZATION. All Rights Reserved.
+    </div>
+</footer>
+
+<div id="serviceModal" class="modal">
+    <div class="modal-content">
+        <div id="modalContent"></div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn btn-secondary" onclick="closeModal()" data-key="close">Funga</button>
+            <button class="btn btn-primary" onclick="requestService()" data-key="requestBtn">Omba Huduma</button>
+        </div>
+    </div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script src="script.js"></script>
+<script>
+    // Load home page content
+    function loadHome() {
+        const main = document.getElementById('mainContent');
+        main.innerHTML = `
+            <div class="glass-container">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div class="typing-text" id="typingText">MR. HAULE ORGANIZATION</div>
+                    <p style="margin-top:20px; font-size:1.1rem;" data-key="heroDesc">Huduma za Kitaaluma na Kiteknolojia kwa uaminifu, haraka na ubora wa hali ya juu.</p>
+                    <button class="btn btn-primary" style="margin-top:30px;" onclick="document.getElementById('servicesSection').scrollIntoView({behavior:'smooth'})" data-key="exploreBtn">Gundua Huduma Zetu</button>
+                </div>
+            </div>
+            <div class="glass-container" id="servicesSection">
+                <h2 style="text-align:center; margin-bottom:20px;" data-key="ourServices">📋 HUDUMA ZETU</h2>
+                <p style="text-align:center; margin-bottom:30px;" data-key="servicesDesc">Chagua huduma unayohitaji, tutakusaidia kwa weledi na uaminifu.</p>
+                <div class="services-grid" id="servicesGrid"></div>
+            </div>
+            <div class="glass-container">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:30px; text-align:center;">
+                    <div><div class="stat-number" style="font-size:2.5rem; font-weight:800;">500+</div><div data-key="clientsServed">Wateja Wamehudumiwa</div></div>
+                    <div><div class="stat-number" style="font-size:2.5rem; font-weight:800;">24/7</div><div data-key="support">Msaada wa Muda wote</div></div>
+                    <div><div class="stat-number" style="font-size:2.5rem; font-weight:800;">100%</div><div data-key="satisfaction">Uridhishaji wa Wateja</div></div>
+                </div>
+            </div>
+            <div class="glass-container">
+                <h2 style="text-align:center; margin-bottom:30px;" data-key="whyUs">⭐ KWANINI UCHAGUE SISI?</h2>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;">
+                    <div style="display:flex; align-items:center; gap:15px;"><i class="fas fa-bolt" style="font-size:2rem;"></i><span data-key="fast">Huduma ya haraka ⚡</span></div>
+                    <div style="display:flex; align-items:center; gap:15px;"><i class="fas fa-lock" style="font-size:2rem;"></i><span data-key="secure">Uaminifu na usiri 🔒</span></div>
+                    <div style="display:flex; align-items:center; gap:15px;"><i class="fas fa-coins" style="font-size:2rem;"></i><span data-key="affordable">Gharama nafuu 💰</span></div>
+                    <div style="display:flex; align-items:center; gap:15px;"><i class="fas fa-laptop-code" style="font-size:2rem;"></i><span data-key="professional">Huduma bora na weledi 👨‍💻</span></div>
+                </div>
+            </div>
+        `;
+        loadServicesOnHome();
+        updateLanguageOnPage();
+        startTypingAnimation();
+    }
+
+    function showServicesOnly() {
+        const main = document.getElementById('mainContent');
+        main.innerHTML = `
+            <div class="glass-container">
+                <h2 style="text-align:center; margin-bottom:20px;" data-key="ourServices">📋 HUDUMA ZETU</h2>
+                <p style="text-align:center; margin-bottom:30px;" data-key="servicesDesc">Chagua huduma unayohitaji, tutakusaidia kwa weledi na uaminifu.</p>
+                <div class="services-grid" id="servicesGrid"></div>
+            </div>
+        `;
+        loadServicesOnHome();
+        updateLanguageOnPage();
+    }
+
+    function startTypingAnimation() {
+        const el = document.getElementById('typingText');
+        if (!el) return;
+        const phrases = currentLang === 'sw' ? ['MR. HAULE ORGANIZATION', 'Huduma za Kitaaluma', 'Huduma za Kiteknolojia', 'Ubora Kila Siku'] : ['MR. HAULE ORGANIZATION', 'Academic Services', 'Technology Services', 'Quality Every Day'];
+        let i = 0, j = 0, isDeleting = false;
+        function type() {
+            const current = phrases[i];
+            if (isDeleting) { el.textContent = current.substring(0, j-1); j--; }
+            else { el.textContent = current.substring(0, j+1); j++; }
+            if (!isDeleting && j === current.length) { isDeleting = true; setTimeout(type, 2000); return; }
+            if (isDeleting && j === 0) { isDeleting = false; i = (i+1) % phrases.length; setTimeout(type, 500); return; }
+            setTimeout(type, isDeleting ? 50 : 100);
+        }
+        type();
+    }
+
+    function requestService() {
+        if (!currentUser) {
+            showToast('Tafadhali ingia kwanza ili kuomba huduma', 'error');
+            setTimeout(() => window.location.href = 'login.html', 1500);
+        } else {
+            showToast('Ombi limepokelewa! Tutawasiliana nawe hivi karibuni.', 'success');
+            closeModal();
+        }
+    }
+
+    window.requestService = requestService;
+    window.showServicesOnly = showServicesOnly;
+    window.loadHome = loadHome;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadHome();
+    });
+</script>
+</body>
+</html>

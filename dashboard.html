@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MR. HAULE ORGANIZATION</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div class="wave-overlay"></div>
+<div class="particles" id="particles"></div>
+
+<header class="header">
+    <div class="header-content">
+        <div class="logo"><div class="logo-img">HA</div><h1>MR. HAULE ORGANIZATION</h1></div>
+        <nav class="nav-menu">
+            <a href="index.html">Nyumbani</a>
+            <a href="#" id="logoutBtn">Toka</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="glass-container" id="dashboardContent">
+        <p>Loading...</p>
+    </div>
+</main>
+
+<script src="firebase-config.js"></script>
+<script>
+    firebase.auth().onAuthStateChanged(async (user) => {
+        if (!user) {
+            window.location.href = 'login.html';
+            return;
+        }
+        const uid = user.uid;
+        const snapshot = await firebase.database().ref('users/' + uid).once('value');
+        const data = snapshot.val() || {};
+        document.getElementById('dashboardContent').innerHTML = `
+            <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                <div style="background:#fff; border-radius:50%; width:80px; height:80px; display:flex; align-items:center; justify-content:center;"><i class="fas fa-user" style="font-size:2.5rem; color:#0a2a5a;"></i></div>
+                <div><h2>Karibu, ${data.fullName || user.email}</h2><p>${user.email}</p><span style="background:#fff; color:#0a2a5a; padding:4px 12px; border-radius:20px;">${data.role === 'admin' ? 'Admin' : 'Mteja'}</span></div>
+            </div>
+            <hr style="margin:20px 0; border-color:rgba(255,255,255,0.2);">
+            <h3>Taarifa zako</h3>
+            <p><strong>Jina:</strong> ${data.fullName || '-'}</p>
+            <p><strong>Simu:</strong> ${data.phone || '-'}</p>
+            <p><strong>Jinsia:</strong> ${data.gender || '-'}</p>
+            <p><strong>Tarehe ya kujiunga:</strong> ${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '-'}</p>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">← Rudi Nyumbani</button>
+        `;
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await firebase.auth().signOut();
+        window.location.href = 'login.html';
+    });
+</script>
+</body>
+</html>
